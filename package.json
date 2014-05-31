@@ -1,0 +1,17 @@
+{
+  "name": "ndm",
+  "version": "0.0.0",
+  "description": "An npm-based deployment tool.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ssh2": "^0.2.25"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.0"
+  }
+}
