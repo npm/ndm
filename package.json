@@ -4,13 +4,20 @@
   "description": "An npm-based deployment tool.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab -c --timeout=8000"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^2.1.1",
+    "cli-color": "^0.3.2",
+    "ejs": "^1.0.0",
+    "lodash": "^2.4.1",
+    "string": "^1.8.1",
+    "yargs": "^1.2.3"
   },
   "devDependencies": {
+    "lab": "^3.2.1",
     "mocha": "^1.20.0"
   }
 }
