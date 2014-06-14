@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ssh2": "^0.2.25"
   },
   "devDependencies": {
     "mocha": "^1.20.0"
