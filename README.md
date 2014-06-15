@@ -63,8 +63,6 @@ An ndm deployment directory consists of:
 * an **service.json** file, used to specify meta-information about the service being deployed.
   * **environment variables**
   * **process counts**, how many copies of the service should be run?
-* a **environments/** folder, in the environments folder you can override `service.json` on an environment, by environment basis:
-  * `ndm deploy staging`, will look for **staging.json** in the environments folder, and override **service.json** with it.
 
 service.json
 -----------
@@ -74,21 +72,25 @@ A typical **service.json** file looks something like this:
 
 ```json
 {
-  "services": {
-    "npm-www": {
-      "procs": 3,
-      "environment": {
-        "PORT": "500%PROC_NUMBER",
-      }
+  "npm-www-1": {
+    "module": "npm-www",
+    "env": {
+      "PORT": "5000",
     }
   },
-  "environment": {
+  "npm-www-2": {
+    "module": "npm-www",
+    "env": {
+      "PORT": "5001",
+    }
+  },
+  "env": {
     "COUCH": "http://registry.example.com"
   }
 }
 ```
 
-* **services:** service specific configuration:
-  * **procs:** how many copies of the service should we run per-host? defaults to `1`.
-  * **environment:** process-specific environment variables.
-* **environment:** environment variables shared across services.
+* **service-name:** name to associate with the daemon script:
+  * **module:** npm-module the daemon executes.
+  * **env:** process-specific environment variables.
+* **env:** environment variables shared across services.

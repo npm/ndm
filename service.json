@@ -1,0 +1,18 @@
+{
+  "ndm-test": {
+    "description": "thumbnailing service",
+    "env": {
+      "PORT": 8000,
+      "USER": "bcoe"
+    }
+  },
+  "ndm-test2": {
+    "module": "ndm-test",
+    "env": {
+      "PORT": 8080
+    }
+  },
+  "env": {
+    "APP": "my-test-app"
+  }
+}

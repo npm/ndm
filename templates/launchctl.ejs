@@ -5,23 +5,27 @@
     <key>KeepAlive</key>
     <true/>
     <key>Label</key>
-    <string>ndm.ndm-test</string>
+    <string><%= name %></string>
     <key>ProgramArguments</key>
     <array>
-      <string>npm start</string>
+      <string><%= nodeBin %></string>
+      <string><%= npmBin %></string>
+      <string>start</string>
     </array>
     <key>EnvironmentVariables</key>
-    <dict>
-      <key>PORT</key>
-      <string>8888</string>
+    <dict><% Object.keys(env).forEach(function(key) { %>
+      <key><%= key %></key>
+      <string><%= env[key] %></string><% }); %>
     </dict>
+    <key>EnableTransactions</key>
+    <true/>
     <key>RunAtLoad</key>
     <true/>
     <key>WorkingDirectory</key>
-    <string>/usr/local/var</string>
+    <string><%= workingDirectory %></string>
     <key>StandardErrorPath</key>
-    <string>/dev/null</string>
+    <string><%= logFile %></string>
     <key>StandardOutPath</key>
-    <string>/dev/null</string>
+    <string><%= logFile %></string>
   </dict>
 </plist>

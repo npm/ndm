@@ -1,18 +1,12 @@
-/**
-smart configuration system, that takes into accoutn CLI,
-Environment, and tries to guess some sane defaults
-based on OS.
-*/
 var Lab = require('lab'),
   path = require('path'),
   Config = require('../lib').Config,
   _ = require('lodash');
 
-// See prepare-tests.js, for follower feed ordering.
 Lab.experiment('config', function() {
   Lab.it('should be initialized with sane defaults', function(done) {
     var config = Config();
-    Lab.expect(config.baseWorkingDirectory).to.match(/node_modules/);
+    Lab.expect(config.baseWorkingDirectory).to.match(/ndm/);
     done();
   });
 
@@ -26,7 +20,7 @@ Lab.experiment('config', function() {
 
   Lab.it('should allow defaults to be overridden by environment variables', function(done) {
     var config = Config({
-      env: _.extend(process.env, {NDM_BASE_WORKING_DIRECTORY: '/foo'})
+      env: {NDM_BASE_WORKING_DIRECTORY: '/foo'}
     });
     Lab.expect(config.baseWorkingDirectory).to.eql('/foo');
     done();
@@ -36,7 +30,16 @@ Lab.experiment('config', function() {
     var config = Config({
       platform: 'darwin'
     });
-    Lab.expect(config.servicesDirectory).to.eql('~/Library/LaunchAgents/');
+    Lab.expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
+    done();
+  });
+
+  Lab.it('should allow OS specific variables to be overridden', function(done) {
+    var config = Config({
+      platform: 'darwin',
+      daemonsDirectory: '/foo'
+    });
+    Lab.expect(config.daemonsDirectory).to.eql('/foo');
     done();
   });
 
