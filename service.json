@@ -1,0 +1,26 @@
+{
+  "ndm-test": {
+    "description": "thumbnailing service",
+    "bin": "./test.js",
+    "env": {
+      "PORT": 8000,
+      "USER": "bcoe"
+    },
+    "args": {
+      "--kitten": "cute"
+    }
+  },
+  "ndm-test2": {
+    "bin": "./test.js",
+    "module": "ndm-test",
+    "env": {
+      "PORT": 8080
+    }
+  },
+  "env": {
+    "APP": "my-test-app"
+  },
+  "args": {
+    "--batman": "greatest-detective"
+  }
+}

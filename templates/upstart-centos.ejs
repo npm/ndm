@@ -1,0 +1,12 @@
+# policy follower.
+
+stop on runlevel [S016]
+
+respawn
+
+limit nofile 1000000 1000000
+
+script
+  cd /root/policy-follower
+  node ./bin/policy-follower.js --whitelist=/root/.whitelist >> /var/log/policy-follower.log 2>&1
+end script

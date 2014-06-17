@@ -1,4 +1,5 @@
-/**
-Handles installing npm dependencies, and populating
-default values in config.json.
-*/
+var Lab = require('lab');
+
+Lab.experiment('installer', function() {
+
+});

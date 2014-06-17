@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>KeepAlive</key>
+    <true/>
+    <key>Label</key>
+    <string><%= name %></string>
+    <key>ProgramArguments</key>
+    <array>
+      <string><%= nodeBin %></string>
+      <string><%= bin %></string><% Object.keys(args).forEach(function(key) { %>
+      <string><%= key %></string>
+      <string><%= args[key] %></string><% }); %>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict><% Object.keys(env).forEach(function(key) { %>
+      <key><%= key %></key>
+      <string><%= env[key] %></string><% }); %>
+    </dict>
+    <key>EnableTransactions</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>WorkingDirectory</key>
+    <string><%= workingDirectory %></string>
+    <key>StandardErrorPath</key>
+    <string><%= logFile %></string>
+    <key>StandardOutPath</key>
+    <string><%= logFile %></string>
+  </dict>
+</plist>

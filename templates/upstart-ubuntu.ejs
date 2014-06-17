@@ -1,0 +1,19 @@
+# generic upstart script, with respawning.
+
+description "ndm-test"
+
+start on stopped networking
+stop on runlevel [016]
+
+setuid ubuntu
+
+limit nofile 1000000 1000000
+
+console log
+
+script
+  cd /node_modules/
+  export NODE_ENV=production; npm start >> /mnt/log/www.log 2>&1
+end script
+
+respawn
