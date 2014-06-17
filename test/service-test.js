@@ -24,6 +24,12 @@ Lab.experiment('service', function() {
       Lab.expect(service.env.APP).to.eql('my-test-app');
       done();
     });
+
+    Lab.it('should load the global args variable', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.args['--batman']).to.eql('greatest-detective');
+      done();
+    });
   });
 
   Lab.experiment('generateScript', function() {
@@ -35,8 +41,32 @@ Lab.experiment('service', function() {
           daemonsDirectory: './'
         });
 
-        var service = Service.allServices()[0];
+        var service = Service.allServices()[0]
         service.generateScript();
+
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service._scriptPath()).toString();
+
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/\.\/test.js/)
+
+        // local environment variables populated.
+        Lab.expect(script).to.match(/PORT/);
+        Lab.expect(script).to.match(/8000/);
+
+        // global environment variables populated.
+        Lab.expect(script).to.match(/APP/)
+        Lab.expect(script).to.match(/my-test-app/);
+
+        // local args varibles populated.
+        Lab.expect(script).to.match(/--kitten/);
+        Lab.expect(script).to.match(/cute/);
+
+        // global ags variables populated.
+        Lab.expect(script).to.match(/--batman/);
+        Lab.expect(script).to.match(/greatest-detective/);
+
         done();
       });
     });

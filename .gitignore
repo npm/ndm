@@ -1,4 +1,4 @@
 node_modules
 .DS_Store
 logs/ndm-test.log
-
+ndm-test.plist

@@ -74,11 +74,16 @@ A typical **service.json** file looks something like this:
 {
   "npm-www-1": {
     "module": "npm-www",
+    "bin": "./test.js",
     "env": {
       "PORT": "5000",
+    },
+    "args": {
+      "--verbose": "true"
     }
   },
   "npm-www-2": {
+    "bin": "./test.js",
     "module": "npm-www",
     "env": {
       "PORT": "5001",
@@ -93,4 +98,6 @@ A typical **service.json** file looks something like this:
 * **service-name:** name to associate with the daemon script:
   * **module:** npm-module the daemon executes.
   * **env:** process-specific environment variables.
+  * **bin:** the script to execute with *node*, e.g., `./bin/my-app.js`.
+  * **args:** command line arguments to pass into the script being executed.
 * **env:** environment variables shared across services.
