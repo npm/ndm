@@ -14,6 +14,11 @@ var Config = require('../lib').Config,
     alias: 'service-json',
     describe: 'path to the JSON file that describes your services',
     default: config.serviceJson
+  }).
+  .options('n', {
+    alias: 'node-bin',
+    describe: 'where is the node.js binary located?',
+    default: config.nodeBin
   }),
   Installer = require('../lib').Installer,
   Service = require('../lib').Service;

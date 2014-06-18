@@ -5,6 +5,11 @@ ndm makes it easy to deploy a complex service-oriented-architecture, by allowing
 
 ndm currently supports, Centos, OSX, and Ubuntu.
 
+## Installing
+
+* `npm install ndm -g`
+  * depending on your OS, you may need to run `npm` as sudo.
+
 ## Making a package work with ndm
 
 * add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires:
