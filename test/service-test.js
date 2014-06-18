@@ -46,7 +46,7 @@ Lab.experiment('service', function() {
 
         // inspect the generated script, and make sure we've
         // populated the appropriate stanzas.
-        var script = fs.readFileSync(service._scriptPath()).toString();
+        var script = fs.readFileSync(service.scriptPath()).toString();
 
         // it should populate the bin for the script.
         Lab.expect(script).to.match(/\.\/test.js/)
