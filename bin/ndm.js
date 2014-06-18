@@ -9,6 +9,7 @@ var Config = require('../lib').Config,
     + 'Usage: ndm <command>\n\n'
     + 'where command is one of:\n\n'
     + '\tinit: initialize the deployment directory.\n'
+    + '\uupdate: update service.json with newly installed packages.\n'
     + '\tgenerate: generate service wrappers from service.json.\n'
     + '\tstart: start all service wrappers.\n'
     + '\trestart: restart all service wrappers.\n'
@@ -45,9 +46,14 @@ if (yargs.argv.help || !yargs.argv._.length) {
 
   try {
     switch(yargs.argv._[0]) {
-    case 'init': // initialize a new ndm directory.
+      case 'init': // initialize a new ndm directory.
         console.log("initializing ndm directory:\n");
         (new Installer()).init();
+        printInitMessage();
+        break;
+      case 'init': // initialize a new ndm directory.
+        console.log("initializing ndm directory:\n");
+        (new Installer()).update();
         printInitMessage();
         break;
       case 'generate': // generate the ndm service wrappers.

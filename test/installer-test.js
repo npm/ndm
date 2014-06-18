@@ -69,4 +69,59 @@ Lab.experiment('installer', function() {
       done();
     });
   });
+
+  Lab.experiment('update', function() {
+    Lab.it('should add args and env stanzas copied from dependencies not yet added to service.json', function(done) {
+      var installer = new Installer({
+          baseWorkingDirectory: './test/fixtures'
+        }),
+        serviceJsonPath = './test/fixtures/service.json';
+
+      fs.writeFileSync(serviceJsonPath, JSON.stringify({
+        "app": {
+          "env": {"foo": "bar"}
+        }
+      }));
+
+      installer.update();
+
+      var serviceJson = JSON.parse(
+        fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      // should add new service.
+      Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
+      Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
+      Lab.expect(serviceJson['ndm-test'].args).to.contain('--verbose');
+      Lab.expect(serviceJson['ndm-test'].args).to.contain('false');
+
+      // should leave old service.
+      Lab.expect(serviceJson['app'].env['foo']).to.eql('bar');
+
+      done();
+    });
+
+    Lab.it('should not overwrite args if a service already exists in service.json', function(done) {
+      var installer = new Installer({
+          baseWorkingDirectory: './test/fixtures'
+        }),
+        serviceJsonPath = './test/fixtures/service.json';
+
+      fs.writeFileSync(serviceJsonPath, JSON.stringify({
+        "ndm-test": {
+          "env": {"foo": "bar"}
+        }
+      }));
+
+      installer.update();
+
+      var serviceJson = JSON.parse(
+        fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      // should not clobber entries that already exist in service.json.
+      Lab.expect(serviceJson['ndm-test'].env['foo']).to.eql('bar');
+      done();
+    });
+  });
 });
