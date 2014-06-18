@@ -27,7 +27,8 @@ Lab.experiment('service', function() {
 
     Lab.it('should load the global args variable', function(done) {
       var service = Service.allServices()[1];
-      Lab.expect(service.args['--batman']).to.eql('greatest-detective');
+      Lab.expect(service.args).to.contain('--batman');
+      Lab.expect(service.args).to.contain('greatest-detective');
       done();
     });
   });
