@@ -17,12 +17,12 @@ var Config = require('../lib').Config,
     alias: 'service-json',
     describe: 'path to the JSON file that describes your services',
     default: config.serviceJson
-  }).
+  })
   .options('n', {
     alias: 'node-bin',
     describe: 'where is the node.js binary located?',
     default: config.nodeBin
-  }),
+  })
   .options('p', {
     alias: 'platform',
     describe: 'what platform should we generate scripts for (centos|darwin|ubuntu).',
@@ -48,7 +48,7 @@ if (yargs.argv.help || !yargs.argv._.length) {
     case 'init': // initialize a new ndm directory.
         console.log("initializing ndm directory:\n");
         (new Installer()).init();
-        config.printInitMessage();
+        printInitMessage();
         break;
       case 'generate': // generate the ndm service wrappers.
         console.log('generating service wrappers:')
@@ -56,7 +56,16 @@ if (yargs.argv.help || !yargs.argv._.length) {
           service.generateScript();
           console.log(clc.yellow("  generated " + service.scriptPath()));
         });
-        config.printRunMessage();
+        printRunMessage();
+        break;
+      case 'start':
+        runCommand('start', 'starting all services')
+        break;
+      case 'stop':
+        runCommand('stop', 'stopping all services')
+        break;
+      case 'restart':
+        runCommand('restart', 'restarting all services')
         break;
       default:
         console.log(yargs.help());
@@ -66,3 +75,26 @@ if (yargs.argv.help || !yargs.argv._.length) {
     console.log("\n" + clc.red(e.message));
   }
 }
+
+// helper for executing CLI command.
+function runCommand(command, message) {
+  console.log(message)
+  Service.allServices().forEach(function(service) {
+    service.runCommand(command, function() {
+      console.log(clc.yellow("  started " + service.scriptPath()));
+    });
+  });
+}
+
+function printRunMessage() {
+  console.log("\nto start a all services run:\n  " + clc.green("ndm start"));
+  console.log("or manually start the service using " + clc.green("launchctl") + ", " + clc.green("initctl") + ", or " + clc.green("upstart\n"));
+  console.log(clc.green('success!'));
+};
+
+function printInitMessage() {
+  console.log("\nedit " + clc.green("service.json") + " to setup your application's environment.");
+  console.log("when you're ready, run " + clc.green('ndm generate') + " to generate service wrappers.");
+  console.log("add dependencies to " + clc.green("package.json") + " and run " + clc.green('ndm update') + " to add additional services.\n");
+  console.log(clc.green('success!'));
+};

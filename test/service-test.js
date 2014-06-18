@@ -41,9 +41,9 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service.startCommand()).to.match(/launchctl.*load.*/)
-      Lab.expect(service.restartCommand()).to.match(/launchctl.*unload.*launchctl.*load/)
-      Lab.expect(service.stopCommand()).to.match(/launchctl.*unload.*/)
+      Lab.expect(service._startCommand()).to.match(/launchctl.*load.*/)
+      Lab.expect(service._restartCommand()).to.match(/launchctl.*unload.*launchctl.*load/)
+      Lab.expect(service._stopCommand()).to.match(/launchctl.*unload.*/)
 
       done();
     });
@@ -55,9 +55,9 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service.startCommand()).to.match(/initctl.*start.*/)
-      Lab.expect(service.restartCommand()).to.match(/initctl.*restart/)
-      Lab.expect(service.stopCommand()).to.match(/initctl.*stop/)
+      Lab.expect(service._startCommand()).to.match(/initctl.*start.*/)
+      Lab.expect(service._restartCommand()).to.match(/initctl.*restart/)
+      Lab.expect(service._stopCommand()).to.match(/initctl.*stop/)
 
       done();
     });
@@ -69,9 +69,9 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service.startCommand()).to.match(/service.*start.*/)
-      Lab.expect(service.restartCommand()).to.match(/service.*restart/)
-      Lab.expect(service.stopCommand()).to.match(/service.*stop/)
+      Lab.expect(service._startCommand()).to.match(/service.*start.*/)
+      Lab.expect(service._restartCommand()).to.match(/service.*restart/)
+      Lab.expect(service._stopCommand()).to.match(/service.*stop/)
 
       done();
     });
