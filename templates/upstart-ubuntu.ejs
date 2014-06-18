@@ -1,6 +1,4 @@
-# generic upstart script, with respawning.
-
-description "ndm-test"
+description "<%= description %>"
 
 start on stopped networking
 stop on runlevel [016]
@@ -12,8 +10,8 @@ limit nofile 1000000 1000000
 console log
 
 script
-  cd /node_modules/
-  export NODE_ENV=production; npm start >> /mnt/log/www.log 2>&1
+  cd <%= workingDirectory %>
+  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% args.forEach(function(arg, n) { %> <%= arg %><% }); %> >> <%= logFile %> 2>&1
 end script
 
 respawn

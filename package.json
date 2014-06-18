@@ -1,13 +1,13 @@
 {
   "name": "ndm",
   "version": "0.0.0",
-  "description": "An npm-based deployment tool.",
+  "description": "ndm allows you to deploy OS-specific service-wrappers directly from npm-packages.",
   "main": "index.js",
   "bin": "./bin/ndm.js",
   "scripts": {
     "test": "lab -c --timeout=8000"
   },
-  "author": "",
+  "author": "Ben Coe <ben@npmjs.com>",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^2.1.1",
