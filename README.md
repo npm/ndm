@@ -1,41 +1,21 @@
-ndm
-===
+# ndm
 
-ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to create
-daemon processes directly from npm packages.
 
-What It's Not
--------------
+ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to deploy OS-specific service-wrappers directly from npm-packages.
 
-ndm doesn't aim to replace Puppet, Chef, or Ansible. I'd recommend using one of these tools to
-prime your servers for ndm deployment:
+ndm currently supports, Centos, OSX, and Ubuntu.
 
-* installing your services dependent technologies, e.g., ImageMagick, nginx, nagios.
-* installing the version of Node.js that your service requires.
-* distributing the SSH keys necessary for deployment.
+## Making a package work with ndm
 
-What It Is
-----------
-
-* ndm makes it easy to generate process daemons from npm packages.
-* ndm helps you setup the environment for these daemons.
-
-Making a Service ndm Deployable
--------------------------------
-
-* add an **environment** stanza to your _package.json_, and specify environment variables
-that your service requires, and their default values: When someone deploying your service
-runs `ndm install my-dependency --save`, these default values will be populated in config.json.
+* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires:
 
 ```json
 {
-  "name": "ndm",
+  "name": "ndm-test",
   "version": "0.0.0",
-  "description": "An npm-backed deployment tool.",
+  "description": "a service designed to be run with ndm.",
   "main": "index.js",
-  "scripts": {
-    "start": "node ./bin/awesome.js"
-  },
+  "bin": "./bin/awesome.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -44,60 +24,86 @@ runs `ndm install my-dependency --save`, these default values will be populated 
   "devDependencies": {
     "mocha": "^1.20.0"
   },
-  "environment": {
-    "PORT": 80,
-    "USERNAME": "foo",
-    "PASSWOR": "bar"
-  }
+  "service": {
+    "args": ["--verbose", "false"],
+    "env": {
+      "PORT": 5000
+    }
+  },
 }
 ```
 
-* make sure you have a **start** script in your __package.json__, this is what will be run by ndm.
+* make sure you have a `bin` stanza in your _package.json_ which, this is the script that ndm will execute with node.
 
-Anatomy of an ndm Deployment Directory
---------------------------------------
+## The ndm directory structure
 
-An ndm deployment directory consists of:
+To deploy service wrappers using ndm you create a folder containing the following files:
 
-* a **package.json** file (generated using npm), describing the set of services that you intend to deploy.
-* an **service.json** file, used to specify meta-information about the service being deployed.
+* **package.json:** an npm package.json, with the `dependencies` stanza listing the various services that ndm will deploy.
+* **service.json:** file, used to specify meta-information about the service being deployed.
   * **environment variables**
-  * **process counts**, how many copies of the service should be run?
-
-service.json
------------
-
-A typical **service.json** file looks something like this:
-
+  * **command line arguments**
+* **node_modules:** the services that ndm will execute, run `npm install` to populate the node modules directory.
+* **logs:** the logs from your ndm service wrappers will be output here.
 
 ```json
 {
-  "npm-www-1": {
-    "module": "npm-www",
+  "ndm-test": {
+    "description": "thumbnailing service",
     "bin": "./test.js",
     "env": {
-      "PORT": "5000",
+      "PORT": "8000",
+      "USER": "bcoe"
     },
-    "args": {
-      "--verbose": "true"
-    }
+    "args": ["--kitten", "cute"]
   },
-  "npm-www-2": {
+  "ndm-test2": {
     "bin": "./test.js",
-    "module": "npm-www",
+    "module": "ndm-test",
     "env": {
-      "PORT": "5001",
+      "PORT": "8080"
     }
   },
   "env": {
-    "COUCH": "http://registry.example.com"
-  }
+    "APP": "my-test-app"
+  },
+  "args": ["--batman", "greatest-detective"]
 }
 ```
 
-* **service-name:** name to associate with the daemon script:
-  * **module:** npm-module the daemon executes.
-  * **env:** process-specific environment variables.
-  * **bin:** the script to execute with *node*, e.g., `./bin/my-app.js`.
-  * **args:** command line arguments to pass into the script being executed.
-* **env:** environment variables shared across services.
+* **service-names:** the top-level keys in the _service.json_ represent the names of the services that you generate.
+* **description:** description of the service.
+* **env:** string environment variables available within the script executed by the ndm service wrapper.
+* **args:** command-line-arguments available to the script executed by the ndm service wrapper.
+
+## Generating service.json
+
+Run `ndm init`, to generate _service.json_ from your installed npm dependencies.
+
+Default values will be copied from the `service` in each services _package.json._
+
+You can override these default settings by editing _service.json._
+
+## Updating dependencies
+
+To add new dependencies:
+
+* run `npm install <service-name> --save`, to add the dependency to your package.json.
+* run `ndm update`, to populate service.json with the service's default values.
+
+## Installing service wrappers
+
+* run `ndm generate`, to generate platform specific service wrappers.
+
+## Starting services
+
+* run `ndm start`, to start all installed services.
+  * you can also manually using `upstart`, `launchctl`, or `initctl`.
+
+## Stopping services
+
+* run `ndm stop`
+
+## Tailing logs
+
+By default logs will be located in `./logs`.

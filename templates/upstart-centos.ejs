@@ -1,4 +1,4 @@
-# policy follower.
+# <%= description %>
 
 stop on runlevel [S016]
 
@@ -7,6 +7,6 @@ respawn
 limit nofile 1000000 1000000
 
 script
-  cd /root/policy-follower
-  node ./bin/policy-follower.js --whitelist=/root/.whitelist >> /var/log/policy-follower.log 2>&1
+  cd <%= workingDirectory %>
+  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% args.forEach(function(arg, n) { %> <%= arg %><% }); %> >> <%= logFile %> 2>&1
 end script
