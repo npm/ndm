@@ -1,0 +1,10 @@
+{
+  "name": "ndm-test-service",
+  "version": "0.0.1",
+  "description": "testing a service deployment using ndm.",
+  "author": "Ben Coe <ben@npmjs.com>",
+  "license": "ISC",
+  "dependencies": {
+    "ndm-test": "0.0.1"
+  }
+}
