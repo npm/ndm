@@ -27,12 +27,35 @@ Lab.experiment('service', function() {
 
     Lab.it('should load the global args variable', function(done) {
       var service = Service.allServices()[1];
-      Lab.expect(service.args['--batman']).to.eql('greatest-detective');
+      Lab.expect(service.args).to.contain('--batman');
+      Lab.expect(service.args).to.contain('greatest-detective');
       done();
     });
   });
 
   Lab.experiment('generateScript', function() {
+
+    function sharedAssertions(script) {
+      // it should populate the bin for the script.
+      Lab.expect(script).to.match(/\.\/test.js/)
+
+      // local environment variables populated.
+      Lab.expect(script).to.match(/PORT/);
+      Lab.expect(script).to.match(/8000/);
+
+      // global environment variables populated.
+      Lab.expect(script).to.match(/APP/)
+      Lab.expect(script).to.match(/my-test-app/);
+
+      // local args varibles populated.
+      Lab.expect(script).to.match(/--kitten/);
+      Lab.expect(script).to.match(/cute/);
+
+      // global ags variables populated.
+      Lab.expect(script).to.match(/--batman/);
+      Lab.expect(script).to.match(/greatest-detective/);
+    }
+
     Lab.experiment('darwin', function() {
       Lab.it('should genterate a script with the appropriate variables populated', function(done) {
         // test generating a script for darwin.
@@ -46,30 +69,58 @@ Lab.experiment('service', function() {
 
         // inspect the generated script, and make sure we've
         // populated the appropriate stanzas.
-        var script = fs.readFileSync(service._scriptPath()).toString();
+        var script = fs.readFileSync(service.scriptPath()).toString();
 
-        // it should populate the bin for the script.
-        Lab.expect(script).to.match(/\.\/test.js/)
-
-        // local environment variables populated.
-        Lab.expect(script).to.match(/PORT/);
-        Lab.expect(script).to.match(/8000/);
-
-        // global environment variables populated.
-        Lab.expect(script).to.match(/APP/)
-        Lab.expect(script).to.match(/my-test-app/);
-
-        // local args varibles populated.
-        Lab.expect(script).to.match(/--kitten/);
-        Lab.expect(script).to.match(/cute/);
-
-        // global ags variables populated.
-        Lab.expect(script).to.match(/--batman/);
-        Lab.expect(script).to.match(/greatest-detective/);
+        sharedAssertions(script);
 
         done();
       });
     });
+
+    Lab.experiment('centos', function() {
+
+      Lab.it('should genterate a script with the appropriate variables populated', function(done) {
+        Config({
+          platform: 'centos',
+          daemonsDirectory: './'
+        });
+
+        var service = Service.allServices()[0]
+        service.generateScript();
+
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service.scriptPath()).toString();
+
+        sharedAssertions(script);
+
+        done();
+      });
+
+    });
+
+    Lab.experiment('linux', function() {
+
+      Lab.it('should genterate a script with the appropriate variables populated', function(done) {
+        Config({
+          platform: 'linux',
+          daemonsDirectory: './'
+        });
+
+        var service = Service.allServices()[0]
+        service.generateScript();
+
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service.scriptPath()).toString();
+
+        sharedAssertions(script);
+
+        done();
+      });
+
+    });
+
   });
 
 });

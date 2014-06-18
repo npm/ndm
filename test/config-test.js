@@ -53,4 +53,13 @@ Lab.experiment('config', function() {
     Lab.expect(config.platform).to.eql('banana');
     done();
   });
+
+  Lab.it('should detect centos based on a release version file', function(done) {
+    var config = Config({
+      releaseInfoFile: './test/fixtures/redhat-release'
+    });
+
+    Lab.expect(config.platform).to.eql('centos');
+    done();
+  });
 });
