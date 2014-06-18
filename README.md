@@ -1,18 +1,16 @@
 # ndm
 
-
 ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to deploy OS-specific service-wrappers directly from npm-packages.
 
 ndm currently supports, Centos, OSX, and Ubuntu.
 
 ## Installing
 
-* `npm install ndm -g`
-  * depending on your OS, you may need to run `npm` as sudo.
+* `npm install ndm -g` (_depending on your OS, you may need to run `npm` as sudo._)
 
 ## Making a package work with ndm
 
-* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires:
+* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires (along with sane defaults):
 
 ```json
 {
@@ -32,7 +30,7 @@ ndm currently supports, Centos, OSX, and Ubuntu.
   "service": {
     "args": ["--verbose", "false"],
     "env": {
-      "PORT": 5000
+      "PORT": "5000"
     }
   },
 }
@@ -85,7 +83,7 @@ To deploy service wrappers using ndm you create a folder containing the followin
 
 Run `ndm init`, to generate _service.json_ from your installed npm dependencies.
 
-Default values will be copied from the `service` in each services _package.json._
+Default values will be copied from the `service` stanza in each service's _package.json._
 
 You can override these default settings by editing _service.json._
 

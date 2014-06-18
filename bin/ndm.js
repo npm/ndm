@@ -9,7 +9,10 @@ var Config = require('../lib').Config,
     + 'Usage: ndm <command>\n\n'
     + 'where command is one of:\n\n'
     + '\tinit: initialize the deployment directory.\n'
-    + '\tgenerate: generate service wrappers from service.json.\n')
+    + '\tgenerate: generate service wrappers from service.json.\n'
+    + '\tstart: start all service wrappers.\n'
+    + '\trestart: restart all service wrappers.\n'
+    + '\tstop: stop all service wrappers.\n')
   .options('s', {
     alias: 'service-json',
     describe: 'path to the JSON file that describes your services',
@@ -19,6 +22,11 @@ var Config = require('../lib').Config,
     alias: 'node-bin',
     describe: 'where is the node.js binary located?',
     default: config.nodeBin
+  }),
+  .options('p', {
+    alias: 'platform',
+    describe: 'what platform should we generate scripts for (centos|darwin|ubuntu).',
+    default: config.platform
   }),
   Installer = require('../lib').Installer,
   Service = require('../lib').Service;

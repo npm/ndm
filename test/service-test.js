@@ -33,6 +33,51 @@ Lab.experiment('service', function() {
     });
   });
 
+  Lab.experiment('commands', function() {
+    Lab.it('should generate appropriate start/stop/restart commands for OSX', function(done) {
+      Config({
+        platform: 'darwin',
+        daemonsDirectory: './'
+      });
+
+      var service = Service.allServices()[0]
+      Lab.expect(service.startCommand()).to.match(/launchctl.*load.*/)
+      Lab.expect(service.restartCommand()).to.match(/launchctl.*unload.*launchctl.*load/)
+      Lab.expect(service.stopCommand()).to.match(/launchctl.*unload.*/)
+
+      done();
+    });
+
+    Lab.it('should generate appropriate start/stop/restart commands for Centos', function(done) {
+      Config({
+        platform: 'centos',
+        daemonsDirectory: './'
+      });
+
+      var service = Service.allServices()[0]
+      Lab.expect(service.startCommand()).to.match(/initctl.*start.*/)
+      Lab.expect(service.restartCommand()).to.match(/initctl.*restart/)
+      Lab.expect(service.stopCommand()).to.match(/initctl.*stop/)
+
+      done();
+    });
+
+    Lab.it('should generate appropriate start/stop/restart commands for Ubuntu', function(done) {
+      Config({
+        platform: 'ubuntu',
+        daemonsDirectory: './'
+      });
+
+      var service = Service.allServices()[0]
+      Lab.expect(service.startCommand()).to.match(/service.*start.*/)
+      Lab.expect(service.restartCommand()).to.match(/service.*restart/)
+      Lab.expect(service.stopCommand()).to.match(/service.*stop/)
+
+      done();
+    });
+
+  });
+
   Lab.experiment('generateScript', function() {
 
     function sharedAssertions(script) {
