@@ -29,7 +29,7 @@ var Config = require('../lib').Config,
     describe: 'what platform should we generate scripts for (centos|darwin|ubuntu).',
     default: config.platform
   })
-  .options('s', {
+  .options('d', {
     alias: 'sudo',
     describe: 'should sudo be used to start services.',
     default: config.sudo
