@@ -61,6 +61,7 @@ To deploy service wrappers using ndm you create a folder containing the followin
     "args": ["--kitten", "cute"]
   },
   "ndm-test2": {
+    "module": "ndm-test",
     "bin": "./test.js",
     "module": "ndm-test",
     "env": {
@@ -74,7 +75,8 @@ To deploy service wrappers using ndm you create a folder containing the followin
 }
 ```
 
-* **service-names:** the top-level keys in the _service.json_ represent the names of the services that you generate.
+* **module:** the name of the npm module that should service as the working directory for the service.
+  * if no module is specified, the key of the service will be used (it's assumed that the service _ndm-test_ runs within the _ndm-test_ module).
 * **description:** description of the service.
 * **env:** string environment variables available within the script executed by the ndm service wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm service wrapper.

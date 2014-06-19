@@ -68,6 +68,21 @@ Lab.experiment('installer', function() {
       }).to.throw(Error, /package\.json did not exist/);
       done();
     });
+
+    Lab.it('should populate bin with the first bin command found', function(done) {
+      var installer = new Installer({
+        baseWorkingDirectory: './test/fixtures'
+      });
+
+      installer.init();
+
+      var serviceJson = JSON.parse(
+        fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      Lab.expect(serviceJson['ndm-test'].bin).to.eql('test.js');
+      done();
+    });
   });
 
   Lab.experiment('update', function() {

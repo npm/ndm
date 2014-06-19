@@ -9,7 +9,7 @@ var Config = require('../lib').Config,
     + 'Usage: ndm <command>\n\n'
     + 'where command is one of:\n\n'
     + '\tinit: initialize the deployment directory.\n'
-    + '\uupdate: update service.json with newly installed packages.\n'
+    + '\tupdate: update service.json with newly installed packages.\n'
     + '\tgenerate: generate service wrappers from service.json.\n'
     + '\tstart: start all service wrappers.\n'
     + '\trestart: restart all service wrappers.\n'
@@ -51,8 +51,8 @@ if (yargs.argv.help || !yargs.argv._.length) {
         (new Installer()).init();
         printInitMessage();
         break;
-      case 'init': // initialize a new ndm directory.
-        console.log("initializing ndm directory:\n");
+      case 'update': // initialize a new ndm directory.
+        console.log("updating service.json:\n");
         (new Installer()).update();
         printInitMessage();
         break;
@@ -86,8 +86,12 @@ if (yargs.argv.help || !yargs.argv._.length) {
 function runCommand(command, message) {
   console.log(message)
   Service.allServices().forEach(function(service) {
-    service.runCommand(command, function() {
-      console.log(clc.yellow("  started " + service.scriptPath()));
+    service.runCommand(command, function(err) {
+      if (err) {
+        console.log(clc.red("\ncould not " + command + " all services. make sure you have run " + clc.green("ndm-generate")))
+      } else {
+        console.log(clc.yellow("  started " + service.scriptPath()));
+      }
     });
   });
 }
