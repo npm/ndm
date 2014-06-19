@@ -70,13 +70,13 @@ if (yargs.argv.help || !yargs.argv._.length) {
         printRunMessage();
         break;
       case 'start':
-        runCommand('start', 'starting all services')
+        runCommand('start', 'starting all services:')
         break;
       case 'stop':
-        runCommand('stop', 'stopping all services')
+        runCommand('stop', 'stopping all services:')
         break;
       case 'restart':
-        runCommand('restart', 'restarting all services')
+        runCommand('restart', 'restarting all services:')
         break;
       default:
         console.log(yargs.help());
@@ -93,9 +93,9 @@ function runCommand(command, message) {
   Service.allServices().forEach(function(service) {
     service.runCommand(command, function(err) {
       if (err) {
-        console.log(clc.red("\ncould not " + command + " all services. make sure you have run " + clc.green("ndm-generate")))
+        console.log(clc.red("could not " + command + " all services. make sure you have run " + clc.green("ndm-generate")))
       } else {
-        console.log(clc.yellow("  started " + service.scriptPath()));
+        console.log(clc.yellow("  " + command + " " + service.scriptPath()));
       }
     });
   });
