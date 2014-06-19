@@ -55,9 +55,9 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service._startCommand()).to.match(/initctl.*start.*/)
-      Lab.expect(service._restartCommand()).to.match(/initctl.*restart/)
-      Lab.expect(service._stopCommand()).to.match(/initctl.*stop/)
+      Lab.expect(service._startCommand()).to.eql("initctl start ndm-test")
+      Lab.expect(service._restartCommand()).to.eql("initctl restart ndm-test")
+      Lab.expect(service._stopCommand()).to.eql("initctl stop ndm-test")
 
       done();
     });
@@ -69,9 +69,9 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service._startCommand()).to.match(/service.*start.*/)
-      Lab.expect(service._restartCommand()).to.match(/service.*restart/)
-      Lab.expect(service._stopCommand()).to.match(/service.*stop/)
+      Lab.expect(service._startCommand()).to.eql("service ndm-test start")
+      Lab.expect(service._restartCommand()).to.eql("service ndm-test restart")
+      Lab.expect(service._stopCommand()).to.eql("service ndm-test stop")
 
       done();
     });

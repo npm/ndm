@@ -28,6 +28,11 @@ var Config = require('../lib').Config,
     alias: 'platform',
     describe: 'what platform should we generate scripts for (centos|darwin|ubuntu).',
     default: config.platform
+  })
+  .options('d', {
+    alias: 'sudo',
+    describe: 'should sudo be used to start services.',
+    default: config.sudo
   }),
   Installer = require('../lib').Installer,
   Service = require('../lib').Service;
