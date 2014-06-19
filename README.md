@@ -8,12 +8,12 @@ ndm currently supports, Centos, OSX, and Ubuntu.
 
 * `npm install ndm -g` (_depending on your OS, you may need to run `npm` as sudo._)
 
-## Making a package work with ndm
+## Making a Package Work With ndm
 
 * add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires (along with sane defaults):
-* make sure you have a `bin` stanza in your _package.json_ which, this is the script that ndm will execute with node.
+* make sure you have a `bin` stanza in your _package.json_, this is the script that ndm will execute with node.
 
-**your modified package.json:**
+**a package.json that's ready for ndm:**
 
 ```json
 {
@@ -39,7 +39,7 @@ ndm currently supports, Centos, OSX, and Ubuntu.
 }
 ```
 
-## Quick start
+## Quick Start
 
 You can follow these steps, to get your services up and running with ndm:
 
@@ -57,7 +57,7 @@ You can follow these steps, to get your services up and running with ndm:
 * to start the service wrappers you've just generated.
   * `ndm start`.
 
-## The ndm project directory
+## The ndm Project Directory
 
 You deploy your ndm services from within an ndm project directory. The project directory will tend to have the following files:
 
@@ -111,27 +111,27 @@ You can override these default settings by editing _service.json._
 * **env:** string environment variables available within the script executed by the ndm service wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm service wrapper.
 
-## Updating dependencies
+## Updating Dependencies
 
 To add new dependencies:
 
 * run `npm install <service-name> --save`, to add the dependency to your package.json.
 * run `ndm update`, to populate service.json with the service's default values.
 
-## Installing service wrappers
+## Installing Service Wrappers
 
 * run `ndm generate`, to generate platform specific service wrappers.
 
-## Starting services
+## Starting Services
 
 * run `ndm start`, to start all installed services.
   * you can also manually using `upstart`, `launchctl`, or `initctl`.
 
-## Stopping services
+## Stopping Services
 
 * run `ndm stop`
 
-## Tailing logs
+## Tailing Logs
 
 By default logs will be located in `./logs`.
 
