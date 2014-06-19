@@ -62,10 +62,10 @@ You can follow these steps, to get your services up and running with ndm:
 You deploy your ndm services from within an ndm project directory. The project directory will tend to have the following files:
 
 * **package.json:** an npm package.json, with the `dependencies` stanza listing the various services that ndm will deploy.
-* **service.json:** file, used to specify meta-information about the service being deployed.
+* **service.json:** used to specify meta-information about the service being deployed.
   * **environment variables**
   * **command line arguments**
-* **node_modules:** the services that ndm will execute, run `npm install` to populate the node modules directory.
+* **node_modules:** the services that ndm will execute, run `npm install` to populate the node modules directory. ndm uses a modules folder in npm_modules as a working directory, when creating a service wrapper.
 * **logs:** the logs from your ndm service wrappers will be output here.
 
 ## Generating service.json
