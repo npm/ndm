@@ -166,6 +166,19 @@ Lab.experiment('service', function() {
 
     });
 
+    Lab.it('should raise an appropriate exception if JSON is invalid', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        serviceJson: './test/fixtures/invalid-service.json'
+      });
+
+      Lab.expect(function() {
+        var service = Service.allServices();
+      }).to.throw(Error, /invalid service.json, check file for errors/);
+      done();
+    });
+
   });
 
 });
