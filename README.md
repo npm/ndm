@@ -107,7 +107,7 @@ You can override these default settings by editing _service.json._
 * **module:** the name of the npm module that should service as the working directory for the service.
   * if no module is specified, the key of the service will be used (it's assumed that the service _ndm-test_ runs within the _ndm-test_ module).
 * **description:** description of the service.
-* **bin:** the command to execute from the working directory, defaults to the bin in _package.json._.
+* **bin:** the command to execute from the working directory, defaults to `bin` in _package.json._.
 * **env:** string environment variables available within the script executed by the ndm service wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm service wrapper.
 
