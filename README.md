@@ -1,27 +1,49 @@
 # ndm
 
-ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to deploy OS-specific service-wrappers directly from npm-packages.
+ndm makes it easy to deploy a complex service-oriented-architecture by allowing you to deploy OS-specific service-wrappers directly from an npm package.
 
-ndm currently supports, Centos, OSX, and Ubuntu.
+ndm currently supports Centos, OS X, and Ubuntu.
 
 ## Installing
 
-* `npm install ndm -g` (_depending on your OS, you may need to run `npm` as sudo._)
+* `npm install ndm -g`
 
-## Making a Package Work With ndm
+You might need to run that as root with `sudo`.
 
-* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires (along with sane defaults):
-* make sure you have a `bin` stanza in your _package.json_, this is the script that ndm will execute with node.
+## Quick Start
 
-**a package.json that's ready for ndm:**
+How to build an ndm-ready package:
+
+1. Install ndm: `sudo npm install ndm -g`
+2. Create a project directory with a _package.json_: `npm init`
+3. Add service dependencies to your _package.json_: `npm install my-service-module --save`
+4. Generate your service.json: `ndm init`.
+5. Edit _service.json_ to add appropriate `args` and `envs` for your server.
+6. When you're ready, generate service wrappers (upstart, initctl, etc): `ndm generate`.
+7. Start the service wrappers you've just generated: `ndm start`.
+
+## Anatomy of an ndm service
+
+ndm can run a single services or a collection of services. It's structured like an npm package, with a **package.json** file listing its dependencies. Each service you want to run with ndm should be packaged as its own separate npm module that the ndm wrapper depends on. Then a **service.json** file describes how to run each service.
+
+An ndm wrapper package looks like this:
+
+    wrapper/
+      package.json
+      service.json
+      logs/
+      node_modules/
+
+### Service dependencies
+
+A node-packaged service built for ndm can provide some hints in its package.json about how to run itself. Here's an example ndm-ready **package.json**:
 
 ```json
 {
-  "name": "ndm-test",
+  "name": "be-awesome",
   "version": "0.0.0",
   "description": "a service designed to be run with ndm.",
   "main": "index.js",
-  "bin": "./bin/awesome.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -30,7 +52,11 @@ ndm currently supports, Centos, OSX, and Ubuntu.
   "devDependencies": {
     "mocha": "^1.20.0"
   },
-  "service": {
+  "bin": {
+    "awesome": "./bin/awesome.js"
+  },
+  "ndm": {
+    "bin": "awesome",
     "args": ["--verbose", "false"],
     "env": {
       "PORT": "5000"
@@ -39,50 +65,19 @@ ndm currently supports, Centos, OSX, and Ubuntu.
 }
 ```
 
-## Quick Start
+Note the `ndm` field and its subfields. `ndm.bin` names the bin script to run to start this service. `ndm.args` is an array listing command-line arguments. `ndm.env` is an object mapping environment variable names to values.
 
-You can follow these steps, to get your services up and running with ndm:
+### The `service.json` file
 
-* install ndm:
-  * `sudo npm install ndm -g`
-* create a project directory with a _package.json_:
-  * `npm init`
-* add service dependencies (see: _making a package work with ndm_), to your _package.json_.
-  * `npm install service --save`
-* generate your service.json:
-  * `ndm init`.
-* edit _service.json_, adding appropriate `args`, and `envs` for your server.
-* when you're ready, generate service wrappers (upstart, initctl, etc):
-  * `ndm generate`.
-* to start the service wrappers you've just generated.
-  * `ndm start`.
+The ndm wrapper must also have a **service.json** file, which describes how to run the services. Run `ndm init` to generate _service.json_ from your installed npm dependencies. The init script will copy default values from the `ndm` stanza in each service's **package.json**. You can then edit the defaults if you need to change anything.
 
-## The ndm Project Directory
-
-You deploy your ndm services from within an ndm project directory. The project directory will tend to have the following files:
-
-* **package.json:** an npm package.json, with the `dependencies` stanza listing the various services that ndm will deploy.
-* **service.json:** used to specify meta-information about the service being deployed.
-  * **environment variables**
-  * **command line arguments**
-* **node_modules:** the services that ndm will execute, run `npm install` to populate the node modules directory. ndm uses a modules folder in npm_modules as a working directory, when creating a service wrapper.
-* **logs:** the logs from your ndm service wrappers will be output here.
-
-## Generating service.json
-
-Run `ndm init`, to generate _service.json_ from your installed npm dependencies.
-
-Default values will be copied from the `service` stanza in each service's _package.json._
-
-You can override these default settings by editing _service.json._
-
-**an example service.json:**
+Here's an example:
 
 ```json
 {
-  "ndm-test": {
-    "description": "thumbnailing service",
-    "bin": "./test.js",
+  "baby-animals": {
+    "description": "baby animal thumbnailing service",
+    "bin": "./baby-animal.js",
     "env": {
       "PORT": "8000",
       "USER": "bcoe"
@@ -90,53 +85,57 @@ You can override these default settings by editing _service.json._
     "args": ["--kitten", "cute"]
   },
   "ndm-test2": {
-    "module": "ndm-test",
-    "bin": "./test.js",
-    "module": "ndm-test",
+    "description": "the awesome service",
+    "module": "be-awesome",
+    "bin": "awesome",
     "env": {
-      "PORT": "8080"
-    }
+      "PORT": "5000"
+    },
+    "args": ["--verbose", "false"]
   },
   "env": {
-    "APP": "my-test-app"
+    "APP": "my-test-app",
+    "NODE_ENV": "production"
   },
   "args": ["--batman", "greatest-detective"]
 }
 ```
 
-* **module:** the name of the npm module that should service as the working directory for the service.
-  * if no module is specified, the key of the service will be used (it's assumed that the service _ndm-test_ runs within the _ndm-test_ module).
+* **module:** the name of the npm module that should be the working directory for the service. If no module is specified, the key of the service will be used as the module name to look for.
 * **description:** description of the service.
-* **bin:** the command to execute from the working directory, defaults to `bin` in _package.json._.
-* **env:** string environment variables available within the script executed by the ndm service wrapper.
-* **args:** command-line-arguments available to the script executed by the ndm service wrapper.
+* **bin:** the command to execute from the working directory; defaults to the value of the `ndm.bin` field in the service's **package.json**.
+* **env:** string environment variables available within the script executed by the ndm wrapper.
+* **args:** command-line-arguments available to the script executed by the ndm wrapper.
 
-## Updating Dependencies
+Defaults for all services are in the top-level `env` and `args` fields. Each services can override and extend the defaults in its own options stanza.
+
+### Updating dependencies
 
 To add new dependencies:
 
-* run `npm install <service-name> --save`, to add the dependency to your package.json.
-* run `ndm update`, to populate service.json with the service's default values.
+* Add a new dependency to the wrapper's **package.json** the way you would for any npm package:<br> `npm install <new-service> --save`
+* Add the new service to **service.json**:<br>`ndm update`.
 
-## Installing Service Wrappers
+## Installing the services
 
-* run `ndm generate`, to generate platform specific service wrappers.
+To install your ndm-wrapped services, copy the package directory to your host system using whatever means you prefer. Then from inside the directory, run `ndm generate`.
 
-## Starting Services
+On systems like Ubuntu, you'll need to run this as root so ndm has permission to add the upstart config file to `/etc/init`. On OS X, you can run it as any user to create a local launch control script.
 
-* run `ndm start`, to start all installed services.
-  * you can also manually using `upstart`, `launchctl`, or `initctl`.
+## Starting and stopping
 
-## Stopping Services
-
-* run `ndm stop`
+You can start and stop the services manually using your host's native daemon control: `upstart`, `launchctl`, or `initctl`. Or you can use `ndm start` and `ndm stop` from inside an ndm wrapper directory to start & stop all the wrapped services.
 
 ## Tailing Logs
 
-By default logs will be located in `./logs`.
+All console.log and console.error output is recorded in the `logs/` directory, in files named `<service-name>.log`. This is separate from whatever internally-managed logging the service might do.
 
 ## Disclaimer
 
-* ndm is an experiment, based on ops challenges we've been facing at npm.
-  * we'll be moving things around a lot in this library, as we use it for our own deployments.
-  * the service stanza is not officially supported by npm.
+ndm is an experiment, based on ops challenges we've been facing at npm. This is a dot release. I'll be moving things around a lot in this library, as we use it for our own deployments.
+
+The `ndm` stanza is not officially supported by npm.
+
+## LICENSE
+
+ISC
