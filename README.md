@@ -1,13 +1,16 @@
 # ndm
 
-
 ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to deploy OS-specific service-wrappers directly from npm-packages.
 
 ndm currently supports, Centos, OSX, and Ubuntu.
 
+## Installing
+
+* `npm install ndm -g` (_depending on your OS, you may need to run `npm` as sudo._)
+
 ## Making a package work with ndm
 
-* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires:
+* add a `service` stanza to your _package.json_, and specify the environment variables and command line arguments that your program requires (along with sane defaults):
 
 ```json
 {
@@ -27,7 +30,7 @@ ndm currently supports, Centos, OSX, and Ubuntu.
   "service": {
     "args": ["--verbose", "false"],
     "env": {
-      "PORT": 5000
+      "PORT": "5000"
     }
   },
 }
@@ -58,6 +61,7 @@ To deploy service wrappers using ndm you create a folder containing the followin
     "args": ["--kitten", "cute"]
   },
   "ndm-test2": {
+    "module": "ndm-test",
     "bin": "./test.js",
     "module": "ndm-test",
     "env": {
@@ -71,7 +75,8 @@ To deploy service wrappers using ndm you create a folder containing the followin
 }
 ```
 
-* **service-names:** the top-level keys in the _service.json_ represent the names of the services that you generate.
+* **module:** the name of the npm module that should service as the working directory for the service.
+  * if no module is specified, the key of the service will be used (it's assumed that the service _ndm-test_ runs within the _ndm-test_ module).
 * **description:** description of the service.
 * **env:** string environment variables available within the script executed by the ndm service wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm service wrapper.
@@ -80,7 +85,7 @@ To deploy service wrappers using ndm you create a folder containing the followin
 
 Run `ndm init`, to generate _service.json_ from your installed npm dependencies.
 
-Default values will be copied from the `service` in each services _package.json._
+Default values will be copied from the `service` stanza in each service's _package.json._
 
 You can override these default settings by editing _service.json._
 
