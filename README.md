@@ -1,5 +1,7 @@
 # ndm
 
+[![Build Status](https://travis-ci.org/npm/ndm.png)](https://travis-ci.org/npm/ndm)
+
 ndm makes it easy to deploy a complex service-oriented-architecture, by allowing you to deploy OS-specific service-wrappers directly from npm-packages.
 
 ndm currently supports, Centos, OSX, and Ubuntu.
