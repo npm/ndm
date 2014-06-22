@@ -6,7 +6,7 @@ var Lab = require('lab'),
 
 Lab.experiment('service', function() {
 
-  Lab.experiment('allServices', function(done) {
+  Lab.experiment('allServices', function() {
     Lab.it('should default module to service name, if no module stanza provided', function(done) {
       var service = Service.allServices()[0];
       Lab.expect(service.module).to.eql(service.name);
@@ -29,6 +29,19 @@ Lab.experiment('service', function() {
       var service = Service.allServices()[1];
       Lab.expect(service.args).to.contain('--batman');
       Lab.expect(service.args).to.contain('greatest-detective');
+      done();
+    });
+  });
+
+  Lab.experiment('getService', function() {
+    Lab.it('should return a single service based on its service name', function(done) {
+      var service1 = Service.getService('ndm-test2'),
+        service2 = Service.getService('ndm-test'),
+        service3 = Service.getService('foobar');
+
+      Lab.expect(service1.name).to.eql('ndm-test2');
+      Lab.expect(service2.name).to.eql('ndm-test');
+      Lab.expect(service3).to.be.undefined;
       done();
     });
   });
