@@ -1,15 +1,38 @@
 var Lab = require('lab'),
   path = require('path'),
-  Config = require('../lib').Config,
+  Cli = require('../lib').Cli,
   _ = require('lodash');
 
 Lab.experiment('cli', function() {
-  Lab.experiment('generate', function() {
+  Lab.experiment('generateArgs', function() {
     Lab.it('should generate options from config class', function(done) {
+      var cli = Cli();
+
+      cli.generateArgs();
+
+      var help = cli.yargs.help();
+
+      // generations option.
+      Lab.expect(help).to.match(/-u/);
+      // generates alias.
+      Lab.expect(help).to.match(/-sudo/);
+      // generates description.
+      Lab.expect(help).to.match(/where does the node executable reside/)
+      // generates defaults.
+      Lab.expect(help).to.match(/default: "darwin"/);
+
       done();
     });
 
-    Lab.it('should generate list of commands from execute list', function(done) {
+    Lab.it('should generate list of possible usage commands', function(done) {
+      var cli = Cli();
+
+      cli.generateArgs();
+
+      var help = cli.yargs.help();
+
+      Lab.expect(help).to.match(/ndm generate/);
+
       done();
     });
   });
