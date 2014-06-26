@@ -6,7 +6,9 @@
       "PORT": 8000,
       "USER": "bcoe"
     },
-    "args": ["--kitten", "cute"]
+    "args": {
+      "--kitten": "cute"
+    }
   },
   "ndm-test2": {
     "bin": "./test.js",
@@ -18,5 +20,7 @@
   "env": {
     "APP": "my-test-app"
   },
-  "args": ["--batman", "greatest-detective"]
+  "args": {
+    "--batman": "greatest-detective"
+  }
 }
