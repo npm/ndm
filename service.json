@@ -15,12 +15,14 @@
     "module": "ndm-test",
     "env": {
       "PORT": 8080
-    }
+    },
+    "args": ["--apple", "banana", "--spider-man", "sad"]
   },
   "env": {
     "APP": "my-test-app"
   },
   "args": {
-    "--batman": "greatest-detective"
+    "--batman": "greatest-detective",
+    "--spider-man": "spectacular"
   }
 }

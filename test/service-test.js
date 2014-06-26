@@ -32,6 +32,18 @@ Lab.experiment('service', function() {
       Lab.expect(service.args['--batman']).to.eql('greatest-detective');
       done();
     });
+
+    Lab.it('should override global args with service specific args', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.args['--spider-man']).to.eql('sad');
+      done();
+    });
+
+    Lab.it('should handle array args', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.args['--apple']).to.eql('banana');
+      done();
+    });
   });
 
   Lab.experiment('commands', function() {
