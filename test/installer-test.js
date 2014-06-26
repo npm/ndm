@@ -55,6 +55,10 @@ Lab.experiment('installer', function() {
       Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
       Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
       Lab.expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
+      Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql({
+        default: '0.0.0.0',
+        description: 'what host should we bind to?'
+      });
 
       done();
     });

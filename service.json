@@ -7,22 +7,38 @@
       "USER": "bcoe"
     },
     "args": {
-      "--kitten": "cute"
+      "--kitten": "cute",
+      "--dog": {
+        "default": "also-cute",
+        "description": "what do you think of dogs?"
+      }
     }
   },
   "ndm-test2": {
     "bin": "./test.js",
     "module": "ndm-test",
     "env": {
-      "PORT": 8080
+      "PORT": 8080,
+      "HOST": {
+        "default": "localhost",
+        "description": "what host should I bind to?"
+      }
     },
     "args": ["--apple", "banana", "--spider-man", "sad", "awesome"]
   },
   "env": {
-    "APP": "my-test-app"
+    "APP": "my-test-app",
+    "ENVIRONMENT": {
+      "default": "test",
+      "description": "what environment should we run the app in"
+    }
   },
   "args": {
     "--batman": "greatest-detective",
-    "--spider-man": "spectacular"
+    "--spider-man": "spectacular",
+    "--frontdoor-url": {
+      "default": "http://127.0.0.1:8080",
+      "description": "url of front facing server"
+    }
   }
 }

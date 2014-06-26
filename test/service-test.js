@@ -8,7 +8,7 @@ var Lab = require('lab'),
 
 Lab.experiment('service', function() {
 
-  Lab.experiment('allServices', function() {
+  Lab.experiment('env', function() {
     Lab.it('should default module to service name, if no module stanza provided', function(done) {
       var service = Service.allServices()[0];
       Lab.expect(service.module).to.eql(service.name);
@@ -27,6 +27,20 @@ Lab.experiment('service', function() {
       done();
     });
 
+    Lab.it('should handle object rather than value for service env', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.env.HOST).to.eql('localhost');
+      done();
+    });
+
+    Lab.it('should handle object rather than value for global env', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.env.ENVIRONMENT).to.eql('test');
+      done();
+    });
+  });
+
+  Lab.experiment('args', function() {
     Lab.it('should load the global args variable', function(done) {
       var service = Service.allServices()[1];
       Lab.expect(service.args['--batman']).to.eql('greatest-detective');
@@ -48,6 +62,18 @@ Lab.experiment('service', function() {
     Lab.it('should handle flags, without creating undefined arguments', function(done) {
       var service = Service.allServices()[1];
       Lab.expect(service.args.awesome).to.not.be.undefined;
+      done();
+    });
+
+    Lab.it('should handle an object rather than a value for service args', function(done) {
+      var service = Service.allServices()[0];
+      Lab.expect(service.args['--dog']).to.eql('also-cute');
+      done();
+    });
+
+    Lab.it('should handle an object rather than a value for global args', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.args['--frontdoor-url']).to.eql('http://127.0.0.1:8080');
       done();
     });
   });
