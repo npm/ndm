@@ -44,6 +44,12 @@ Lab.experiment('service', function() {
       Lab.expect(service.args['--apple']).to.eql('banana');
       done();
     });
+
+    Lab.it('should handle flags, without creating undefined arguments', function(done) {
+      var service = Service.allServices()[1];
+      Lab.expect(service.args.awesome).to.not.be.undefined;
+      done();
+    });
   });
 
   Lab.experiment('commands', function() {

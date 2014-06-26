@@ -16,7 +16,7 @@
     "env": {
       "PORT": 8080
     },
-    "args": ["--apple", "banana", "--spider-man", "sad"]
+    "args": ["--apple", "banana", "--spider-man", "sad", "awesome"]
   },
   "env": {
     "APP": "my-test-app"
