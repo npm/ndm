@@ -21,7 +21,7 @@ Lab.experiment('cli', function() {
       // generates description.
       Lab.expect(help).to.match(/where does the node executable reside/)
       // generates defaults.
-      Lab.expect(help).to.match(/default: "darwin"/);
+      Lab.expect(help).to.match(/default: .*service\.json/);
 
       done();
     });
