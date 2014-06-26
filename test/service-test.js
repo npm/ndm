@@ -1,7 +1,9 @@
+require('../lib/config')({headless: true}); // turn off output in tests.
+
 var Lab = require('lab'),
   path = require('path'),
-  Service = require('../lib').Service,
   Config = require('../lib').Config,
+  Service = require('../lib').Service,
   fs = require('fs');
 
 Lab.experiment('service', function() {
@@ -29,19 +31,6 @@ Lab.experiment('service', function() {
       var service = Service.allServices()[1];
       Lab.expect(service.args).to.contain('--batman');
       Lab.expect(service.args).to.contain('greatest-detective');
-      done();
-    });
-  });
-
-  Lab.experiment('getService', function() {
-    Lab.it('should return a single service based on its service name', function(done) {
-      var service1 = Service.getService('ndm-test2'),
-        service2 = Service.getService('ndm-test'),
-        service3 = Service.getService('foobar');
-
-      Lab.expect(service1.name).to.eql('ndm-test2');
-      Lab.expect(service2.name).to.eql('ndm-test');
-      Lab.expect(service3).to.be.undefined;
       done();
     });
   });

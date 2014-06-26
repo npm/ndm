@@ -1,3 +1,5 @@
+require('../lib/config')({headless: true}); // turn off output in tests.
+
 var Lab = require('lab'),
   Installer = require('../lib/').Installer,
   fs = require('fs'),

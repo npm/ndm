@@ -1,3 +1,5 @@
+require('../lib/config')({headless: true}); // turn off output in tests.
+
 var Lab = require('lab'),
   path = require('path'),
   Cli = require('../lib').Cli,
@@ -39,26 +41,73 @@ Lab.experiment('cli', function() {
 
   Lab.experiment('help', function() {
     Lab.it('should print help if no arguments are given', function(done) {
-      done();
+      var cli = Cli({
+        yargs: require('yargs')([]),
+        logger: {
+          log: function(str) {
+            Lab.expect(str).to.match(/Usage:/);
+            done();
+          }
+        }
+      });
+
+      cli.run();
     });
 
     Lab.it('should print help if --help is given', function(done) {
-      done();
+      var cli = Cli({
+        yargs: require('yargs')(['generate', '--help']),
+        logger: {
+          log: function(str) {
+            Lab.expect(str).to.match(/Usage:/);
+            done();
+          }
+        }
+      });
+
+      cli.run();
     });
 
     Lab.it('should print help if command is not found', function(done) {
-      done();
+      var cli = Cli({
+        yargs: require('yargs')(['foobar']),
+        logger: {
+          error: function(str) {},
+          log: function(str) {
+            Lab.expect(str).to.match(/Usage:/);
+            done();
+          }
+        }
+      });
+
+      cli.run();
     });
 
   });
 
   Lab.experiment('execute', function () {
     Lab.it('should execute non-hyphenated option as command', function(done) {
-      done();
+      var cli = Cli({
+        yargs: require('yargs')(['generate']),
+        generate: function(serviceName) {
+          Lab.expect(serviceName).to.be.undefined;
+          done();
+        }
+      });
+
+      cli.run();
     });
 
     Lab.it('should pass additional non-hyphenated commands as args', function(done) {
-      done();
+      var cli = Cli({
+        yargs: require('yargs')(['start', 'foobar']),
+        start: function(serviceName) {
+          Lab.expect(serviceName).to.eql('foobar');
+          done();
+        }
+      });
+
+      cli.run();
     });
   });
 });
