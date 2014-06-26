@@ -158,6 +158,31 @@ Lab.experiment('service', function() {
 
         sharedAssertions(script);
 
+        // we should not try to su.
+        Lab.expect(script).to.not.match(/su -/);
+
+        done();
+      });
+
+      Lab.it('should switch su to uid user, if uid is provided', function(done) {
+        Config({
+          platform: 'centos',
+          daemonsDirectory: './',
+          uid: 'npm'
+        });
+
+        var service = Service.allServices()[0]
+        service.generateScript();
+
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service.scriptPath()).toString();
+
+        sharedAssertions(script);
+
+        // we should try to step down our privileges.
+        Lab.expect(script).to.match(/su - npm/);
+
         done();
       });
 
