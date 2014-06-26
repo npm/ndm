@@ -10,8 +10,8 @@
     <array>
       <string><%= nodeBin %></string>
       <string><%= bin %></string><% Object.keys(args).forEach(function(key) { %>
-      <string><%= args[key] %></string>
-      <string><%= key %></string><% }); %>
+      <string><%= key %></string>
+      <string><%= args[key]  %></string><% }); %>
     </array>
     <key>EnvironmentVariables</key>
     <dict><% Object.keys(env).forEach(function(key) { %>
