@@ -54,8 +54,7 @@ Lab.experiment('installer', function() {
 
       Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
       Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
-      Lab.expect(serviceJson['ndm-test'].args).to.contain('--verbose');
-      Lab.expect(serviceJson['ndm-test'].args).to.contain('false');
+      Lab.expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
 
       done();
     });
@@ -82,7 +81,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].bin).to.eql('./test.js');
+      Lab.expect(serviceJson['ndm-test'].bin).to.eql('test.js');
       done();
     });
   });
@@ -109,8 +108,7 @@ Lab.experiment('installer', function() {
       // should add new service.
       Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
       Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
-      Lab.expect(serviceJson['ndm-test'].args).to.contain('--verbose');
-      Lab.expect(serviceJson['ndm-test'].args).to.contain('false');
+      Lab.expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
 
       // should leave old service.
       Lab.expect(serviceJson['app'].env['foo']).to.eql('bar');

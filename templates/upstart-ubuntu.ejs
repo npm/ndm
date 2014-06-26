@@ -11,7 +11,7 @@ console log
 
 script
   cd <%= workingDirectory %>
-  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% args.forEach(function(arg, n) { %> <%= arg %><% }); %> >> <%= logFile %> 2>&1
+  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% Object.keys(args).forEach(function(key) { %> <%= key %><%= args[key] %><% }); %> >> <%= logFile %> 2>&1
 end script
 
 respawn
