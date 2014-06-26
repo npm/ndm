@@ -1,12 +1,14 @@
+require('../lib/config')({headless: true}); // turn off output in tests.
+
 var Lab = require('lab'),
   path = require('path'),
-  Service = require('../lib').Service,
   Config = require('../lib').Config,
+  Service = require('../lib').Service,
   fs = require('fs');
 
 Lab.experiment('service', function() {
 
-  Lab.experiment('allServices', function(done) {
+  Lab.experiment('allServices', function() {
     Lab.it('should default module to service name, if no module stanza provided', function(done) {
       var service = Service.allServices()[0];
       Lab.expect(service.module).to.eql(service.name);
