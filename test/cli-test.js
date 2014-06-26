@@ -110,4 +110,60 @@ Lab.experiment('cli', function() {
       cli.run();
     });
   });
+
+  Lab.experiment('_runCommand', function() {
+    Lab.it('runs a command on all services, if no service name given', function(done) {
+      // fake array of services for allServices.
+      var services = [
+        {
+          name: 'service1',
+          runCommand: function(command) {
+            Lab.expect(command).to.eql('start');
+          }
+        },
+        {
+          name: 'service2',
+          runCommand: function(command) {
+            Lab.expect(command).to.eql('start');
+            done();
+          }
+        }
+      ];
+
+      var cli = Cli({
+        service: {
+          allServices: function() { return services; }
+        }
+      });
+
+      cli._runCommand('start');
+    });
+
+    Lab.it('runs a command on a single service if service name is given', function(done) {
+      // fake array of services for allServices.
+      var services = [
+        {
+          name: 'service1',
+          runCommand: function(command) {
+            throw Error('should not try to start service1');
+          }
+        },
+        {
+          name: 'service2',
+          runCommand: function(command) {
+            Lab.expect(command).to.eql('start');
+            done();
+          }
+        }
+      ];
+
+      var cli = Cli({
+        service: {
+          allServices: function() { return services; }
+        }
+      });
+
+      cli._runCommand('start', 'service2');
+    });
+  });
 });
