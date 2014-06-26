@@ -8,5 +8,5 @@ limit nofile 1000000 1000000
 
 script
   cd <%= workingDirectory %>
-  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% Object.keys(args).forEach(function(key) { %> <%= key %><%= args[key] %><% }); %> >> <%= logFile %> 2>&1
+  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= bin %><% Object.keys(args).forEach(function(key) { %> <%= key %> <%= args[key] %><% }); %> >> <%= logFile %> 2>&1
 end script
