@@ -59,7 +59,9 @@ A node-packaged service built for ndm can provide some hints in its package.json
   },
   "ndm": {
     "bin": "awesome",
-    "args": ["--verbose", "false"],
+    "args": {
+      "--verbose": "false"
+    },
     "env": {
       "PORT": "5000"
     }
@@ -67,7 +69,7 @@ A node-packaged service built for ndm can provide some hints in its package.json
 }
 ```
 
-Note the `ndm` field and its subfields. `ndm.bin` names the bin script to run to start this service. `ndm.args` is an array listing command-line arguments. `ndm.env` is an object mapping environment variable names to values.
+Note the `ndm` field and its subfields. `ndm.bin` names the bin script to run to start this service. `ndm.args` is a map of command-line arguments and their values. `ndm.env` is an object mapping environment variable names to values.
 
 ### The `service.json` file
 
@@ -84,7 +86,9 @@ Here's an example:
       "PORT": "8000",
       "USER": "bcoe"
     },
-    "args": ["--kitten", "cute"]
+    "args": {
+      "--kitten": "cute"
+    }
   },
   "ndm-test2": {
     "description": "the awesome service",
@@ -93,13 +97,17 @@ Here's an example:
     "env": {
       "PORT": "5000"
     },
-    "args": ["--verbose", "false"]
+    "args": {
+      "--verbose": "false"
+    }
   },
   "env": {
     "APP": "my-test-app",
     "NODE_ENV": "production"
   },
-  "args": ["--batman", "greatest-detective"]
+  "args": {
+    "--batman": "greatest-detective"
+  }
 }
 ```
 
