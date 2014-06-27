@@ -140,6 +140,29 @@ You can start and stop the services manually using your host's native daemon con
 
 All console.log and console.error output is recorded in the `logs/` directory, in files named `<service-name>.log`. This is separate from whatever internally-managed logging the service might do.
 
+## Interviewing the User
+
+Rather than providing set-in-stone default values, you can opt to interview your user. To interview a user for important variables, write your default values in this form:
+
+```json
+"env": {
+  "HOST": {
+    "default": "localhost",
+    "description": "what host should I bind to?"
+  }
+}
+```
+
+By running `ndm interview`, a user will then be asked to fill in these values in an interactive manner:
+
+```bash
+Benjamins-MacBook-Air:ndm benjamincoe$ node ./bin/ndm.js interview
+starting interview:
+[?] url of front facing server: www.example.com
+[?] what environment should we run the app in: test
+[?] what do you think of dogs? I like 'em.
+```
+
 ## Disclaimer
 
 ndm is an experiment, based on ops challenges we've been facing at npm. This is a dot release. I'll be moving things around a lot in this library, as we use it for our own deployments.
