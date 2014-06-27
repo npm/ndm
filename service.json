@@ -11,6 +11,10 @@
       "--dog": {
         "default": "also-cute",
         "description": "what do you think of dogs?"
+      },
+      "--frontdoor-url": {
+        "default": "google.com",
+        "description": "pork chop sandwiches"
       }
     }
   },
