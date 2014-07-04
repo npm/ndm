@@ -85,7 +85,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].bin).to.eql('test.js');
+      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('./test.js');
       done();
     });
   });

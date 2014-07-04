@@ -9,7 +9,7 @@
     <key>ProgramArguments</key>
     <array>
       <string><%= nodeBin %></string>
-      <string><%= bin %></string><% Object.keys(args).forEach(function(key) { %>
+      <string><%= scripts.start %></string><% Object.keys(args).forEach(function(key) { %>
       <string><%= key %></string>
       <string><%= args[key]  %></string><% }); %>
     </array>
