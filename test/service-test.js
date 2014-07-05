@@ -240,7 +240,7 @@ Lab.experiment('service', function() {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
-        serviceJson: './test/fixtures/invalid-service.json'
+        serviceJsonPath: './test/fixtures/invalid-service.json'
       });
 
       Lab.expect(function() {

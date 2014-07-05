@@ -90,14 +90,15 @@ Lab.experiment('interview', function() {
     Lab.it('persists service.json with answers to questions', function(done) {
       // generate the service.json.
       var installer = new Installer({
-        baseWorkingDirectory: './test/fixtures'
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
       });
 
       installer.init();
 
       // run the interview.
       var interview = new Interview({
-        serviceJson: './test/fixtures/service.json',
+        serviceJsonPath: './test/fixtures/service.json',
         inquirer: {
           prompt: function(questions, cb) {
             cb({

@@ -32,7 +32,13 @@
         "description": "what host should I bind to?"
       }
     },
-    "args": ["--apple", "banana", "--spider-man", "sad", "awesome"]
+    "args": [
+      "--apple",
+      "banana",
+      "--spider-man",
+      "sad",
+      "awesome"
+    ]
   },
   "env": {
     "APP": "my-test-app",
