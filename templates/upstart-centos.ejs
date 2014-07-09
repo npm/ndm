@@ -9,5 +9,5 @@ limit nofile 1000000 1000000
 script<% if (uid) { %>
   su - <%= uid %><% } %>
   cd <%= workingDirectory %>
-  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= scripts.start %><% Object.keys(args).forEach(function(key) { %> <%= key %> <%= args[key] %><% }); %> >> <%= logFile %> 2>&1
+  <% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= scripts.start.replace(/^node +/, '') %><% Object.keys(args).forEach(function(key) { %> <%= key %> <%= args[key] %><% }); %> >> <%= logFile %> 2>&1
 end script

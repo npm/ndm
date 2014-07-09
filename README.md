@@ -54,11 +54,10 @@ A node-packaged service built for ndm can provide some hints in its package.json
   "devDependencies": {
     "mocha": "^1.20.0"
   },
-  "bin": {
-    "awesome": "./bin/awesome.js"
+  "script": {
+    "start": "node ./bin/awesome.js"
   },
-  "ndm": {
-    "bin": "awesome",
+  "environment": {
     "args": {
       "--verbose": "false"
     },
@@ -69,7 +68,7 @@ A node-packaged service built for ndm can provide some hints in its package.json
 }
 ```
 
-Note the `ndm` field and its subfields. `ndm.bin` names the bin script to run to start this service. `ndm.args` is a map of command-line arguments and their values. `ndm.env` is an object mapping environment variable names to values.
+Note the `environment` field and its subfields. `environment.args` is a map of arguments that should be passed to the ndm service. `ndm.env` is a map of environment variables that should be passed to your ndm service.
 
 ### The `service.json` file
 
@@ -81,7 +80,9 @@ Here's an example:
 {
   "baby-animals": {
     "description": "baby animal thumbnailing service",
-    "bin": "./baby-animal.js",
+    "scripts": {
+      "start": "./baby-animal.js"
+    },
     "env": {
       "PORT": "8000",
       "USER": "bcoe"
@@ -93,7 +94,9 @@ Here's an example:
   "ndm-test2": {
     "description": "the awesome service",
     "module": "be-awesome",
-    "bin": "awesome",
+    "scripts": {
+      "start": "./bin/foo.js"
+    },
     "env": {
       "PORT": "5000"
     },
@@ -113,7 +116,7 @@ Here's an example:
 
 * **module:** the name of the npm module that should be the working directory for the service. If no module is specified, the key of the service will be used as the module name to look for.
 * **description:** description of the service.
-* **bin:** the command to execute from the working directory; defaults to the value of the `ndm.bin` field in the service's **package.json**.
+* **scripts:** scripts that can be executed by ndm. When generating service wrappers the `start` script is used.
 * **env:** string environment variables available within the script executed by the ndm wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm wrapper.
 

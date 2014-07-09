@@ -1,6 +1,6 @@
 {
   "name": "ndm",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "ndm allows you to deploy OS-specific service-wrappers directly from npm-packages.",
   "main": "index.js",
   "bin": "./bin/ndm.js",

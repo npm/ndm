@@ -75,7 +75,7 @@ Lab.experiment('installer', function() {
       done();
     });
 
-    Lab.it('should populate bin with the first bin command found', function(done) {
+    Lab.it('should populate scripts stanza in service.json', function(done) {
       var installer = new Installer({
         baseWorkingDirectory: './test/fixtures',
         serviceJsonPath: './test/fixtures/service.json'
@@ -87,7 +87,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('./test.js');
+      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
       done();
     });
   });
