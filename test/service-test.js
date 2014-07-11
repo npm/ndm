@@ -240,13 +240,106 @@ Lab.experiment('service', function() {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
-        serviceJson: './test/fixtures/invalid-service.json'
+        serviceJsonPath: './test/fixtures/invalid-service.json'
       });
 
       Lab.expect(function() {
         var service = Service.allServices();
       }).to.throw(Error, /invalid service.json, check file for errors/);
       done();
+    });
+
+  });
+
+  Lab.experiment('listScripts', function() {
+    Lab.it('should list scripts provided by service', function(done) {
+      Config({
+        headless: true,
+        logger: {
+          success: function(msg) {
+            Lab.expect(msg).to.match(/foo/)
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+
+      service.listScripts();
+    })
+  });
+
+  Lab.experiment('runScript', function() {
+    Lab.it('should execute matching script for service', function(done) {
+      Config({
+        headless: true,
+        utils: {
+          exec: function(cmd, cb) {
+            Lab.expect(cmd).to.match(/\.\/bin\/foo\.js/);
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('foo');
+    });
+
+    Lab.it('should not explode if script does not exist', function(done) {
+      Config({
+        headless: true,
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('banana', function() {
+        done();
+      });
+    });
+
+    Lab.it('should execute the script with the appropriate arguments', function(done) {
+      Config({
+        headless: true,
+        utils: {
+          exec: function(cmd, cb) {
+            Lab.expect(cmd).to.match(/--dog also-cute/);
+            Lab.expect(cmd).to.match(/--batman greatest-detective/);
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('foo');
+    });
+
+    Lab.it('should execute the script with environment variables prepended', function(done) {
+      Config({
+        headless: true,
+        utils: {
+          exec: function(cmd, cb) {
+            Lab.expect(cmd).to.match(/PORT="8000"/);
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('foo');
+    });
+
+    Lab.it('should pass process.argv arguments to script', function(done) {
+      Config({
+        headless: true,
+        utils: {
+          exec: function(cmd, cb) {
+            Lab.expect(cmd).to.match(/--timeout=8000/);
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('foo');
     });
 
   });

@@ -1,7 +1,10 @@
 {
   "ndm-test": {
     "description": "thumbnailing service",
-    "bin": "./test.js",
+    "scripts": {
+      "start": "./test.js",
+      "foo": "./bin/foo.js"
+    },
     "env": {
       "PORT": 8000,
       "USER": "bcoe"
@@ -19,7 +22,9 @@
     }
   },
   "ndm-test2": {
-    "bin": "./test.js",
+    "scripts": {
+      "start": "./test.js"
+    },
     "module": "ndm-test",
     "env": {
       "PORT": 8080,
@@ -28,7 +33,13 @@
         "description": "what host should I bind to?"
       }
     },
-    "args": ["--apple", "banana", "--spider-man", "sad", "awesome"]
+    "args": [
+      "--apple",
+      "banana",
+      "--spider-man",
+      "sad",
+      "awesome"
+    ]
   },
   "env": {
     "APP": "my-test-app",

@@ -22,9 +22,7 @@ Lab.experiment('installer', function() {
   Lab.experiment('init', function() {
 
     Lab.it('should raise an exception if service.json already exists', function(done) {
-      var installer = new Installer({
-        baseWorkingDirectory: './'
-      });
+      var installer = new Installer();
 
       Lab.expect(function() {
         installer.init();
@@ -34,7 +32,8 @@ Lab.experiment('installer', function() {
 
     Lab.it('should create a directory for logs', function(done) {
       var installer = new Installer({
-        baseWorkingDirectory: './test/fixtures'
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
       });
 
       installer.init();
@@ -43,7 +42,8 @@ Lab.experiment('installer', function() {
 
     Lab.it('should add args and env stanzas copied from dependencies', function(done) {
       var installer = new Installer({
-        baseWorkingDirectory: './test/fixtures'
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
       });
 
       installer.init();
@@ -65,7 +65,8 @@ Lab.experiment('installer', function() {
 
     Lab.it('should raise an exception if package.json does not exist in the ndm directory', function(done) {
       var installer = new Installer({
-        baseWorkingDirectory: './test'
+        baseWorkingDirectory: './test',
+        serviceJsonPath: './test/fixtures/service.json'
       });
 
       Lab.expect(function() {
@@ -74,9 +75,10 @@ Lab.experiment('installer', function() {
       done();
     });
 
-    Lab.it('should populate bin with the first bin command found', function(done) {
+    Lab.it('should populate scripts stanza in service.json', function(done) {
       var installer = new Installer({
-        baseWorkingDirectory: './test/fixtures'
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
       });
 
       installer.init();
@@ -85,7 +87,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].bin).to.eql('test.js');
+      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
       done();
     });
   });
@@ -93,7 +95,8 @@ Lab.experiment('installer', function() {
   Lab.experiment('update', function() {
     Lab.it('should add args and env stanzas copied from dependencies not yet added to service.json', function(done) {
       var installer = new Installer({
-          baseWorkingDirectory: './test/fixtures'
+          baseWorkingDirectory: './test/fixtures',
+          serviceJsonPath: './test/fixtures/service.json'
         }),
         serviceJsonPath = './test/fixtures/service.json';
 
