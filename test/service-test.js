@@ -327,6 +327,21 @@ Lab.experiment('service', function() {
       service.runScript('foo');
     });
 
+    Lab.it('should pass process.argv arguments to script', function(done) {
+      Config({
+        headless: true,
+        utils: {
+          exec: function(cmd, cb) {
+            Lab.expect(cmd).to.match(/--timeout=8000/);
+            done();
+          }
+        }
+      });
+
+      var service = Service.allServices()[0];
+      service.runScript('foo');
+    });
+
   });
 
 });
