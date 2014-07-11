@@ -196,6 +196,11 @@ Lab.experiment('cli', function() {
     });
 
     Lab.it('runs a script for a single service if service name is given', function(done) {
+      require('../lib/config')({
+        headless: true,
+        filter: 'service2'
+      });
+
       // fake array of services for allServices.
       var services = [
         {
@@ -219,7 +224,7 @@ Lab.experiment('cli', function() {
         }
       });
 
-      cli['run-script']('foo-script', 'service2');
+      cli['run-script']('foo-script');
     });
   });
 });
