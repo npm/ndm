@@ -274,6 +274,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/\.\/bin\/foo\.js/);
             done();
@@ -300,6 +301,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/--dog also-cute/);
             Lab.expect(cmd).to.match(/--batman greatest-detective/);
@@ -316,6 +318,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/PORT="8000"/);
             done();
@@ -331,6 +334,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/--timeout=8000/);
             done();
