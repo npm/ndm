@@ -1,5 +1,5 @@
 node_modules
 .DS_Store
-logs/ndm-test.log
+logs/
 ndm-test.plist
 ndm-test.conf
