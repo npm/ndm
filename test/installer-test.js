@@ -90,6 +90,10 @@ Lab.experiment('installer', function() {
       Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
       done();
     });
+
+    Lab.it('should populate scripts with commands from bin stanza', function(done) {
+      done();
+    });
   });
 
   Lab.experiment('update', function() {
