@@ -2,7 +2,7 @@
   "ndm-test": {
     "description": "thumbnailing service",
     "scripts": {
-      "start": "./test.js",
+      "start": "node ./test.js convert --foo=bar",
       "foo": "./bin/foo.js"
     },
     "env": {

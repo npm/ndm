@@ -9,9 +9,8 @@
     <key>ProgramArguments</key>
     <array>
       <string><%= nodeBin %></string>
-      <string><%= scripts.start.replace(/^node +/, '') %></string><% Object.keys(args).forEach(function(key) { %>
-      <string><%= key %></string>
-      <string><%= args[key]  %></string><% }); %>
+      <string><%= startScript %></string><% flatArgs.forEach(function(arg) { %>
+      <string><%= arg %></string><% }); %>
     </array>
     <key>EnvironmentVariables</key>
     <dict><% Object.keys(env).forEach(function(key) { %>
