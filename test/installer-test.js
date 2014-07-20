@@ -92,6 +92,18 @@ Lab.experiment('installer', function() {
     });
 
     Lab.it('should populate scripts with commands from bin stanza', function(done) {
+      var installer = new Installer({
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
+      });
+
+      installer.init();
+
+      var serviceJson = JSON.parse(
+        fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      Lab.expect(serviceJson['ndm-test'].scripts.thumbd).to.eql('./test3.js');
       done();
     });
   });
