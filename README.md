@@ -72,7 +72,7 @@ Note the `environment` field and its subfields. `environment.args` is a map of a
 
 ### The `service.json` file
 
-The ndm wrapper must also have a **service.json** file, which describes how to run the services. Run `ndm init` to generate _service.json_ from your installed npm dependencies. The init script will copy default values from the `ndm` stanza in each service's **package.json**. You can then edit the defaults if you need to change anything.
+The ndm wrapper must also have a **service.json** file, which describes how to run the services. Run `ndm init` to generate _service.json_ from your installed npm dependencies. The init script will copy default values from the `environment` stanza in each service's **package.json**. You can then edit the defaults if you need to change anything.
 
 Here's an example:
 
