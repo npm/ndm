@@ -5,6 +5,6 @@
   "author": "Ben Coe <ben@npmjs.com>",
   "license": "ISC",
   "dependencies": {
-    "ndm-test": "0.0.10"
+    "ndm-test": "0.0.16"
   }
 }
