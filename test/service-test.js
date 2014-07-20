@@ -126,9 +126,6 @@ Lab.experiment('service', function() {
   Lab.experiment('generateScript', function() {
 
     function sharedAssertions(script) {
-      // it should populate the bin for the script.
-      Lab.expect(script).to.match(/\.\/test.js/)
-
       // local environment variables populated.
       Lab.expect(script).to.match(/PORT/);
       Lab.expect(script).to.match(/8000/);
@@ -163,6 +160,9 @@ Lab.experiment('service', function() {
 
         sharedAssertions(script);
 
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/>.\/test.js/)
+
         done();
       });
     });
@@ -186,6 +186,9 @@ Lab.experiment('service', function() {
 
         // we should not try to su.
         Lab.expect(script).to.not.match(/su -/);
+
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/bin\/node \.\/test.js/)
 
         done();
       });
@@ -230,6 +233,9 @@ Lab.experiment('service', function() {
         var script = fs.readFileSync(service.scriptPath()).toString();
 
         sharedAssertions(script);
+
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/bin\/node \.\/test.js/)
 
         done();
       });
@@ -346,6 +352,28 @@ Lab.experiment('service', function() {
       service.runScript('foo');
     });
 
+  });
+
+  Lab.experiment('_startScript', function() {
+    Lab.it('should remove node bin from the start script', function(done) {
+      var service = Service.allServices()[0],
+        startScript = service._startScript([]);
+
+      Lab.expect(startScript).to.eql('./test.js');
+
+      done();
+    });
+
+    Lab.it('should add arguments from scripts.start to flatArgs', function(done) {
+      var service = Service.allServices()[0],
+        args = ['foo'],
+        startScript = service._startScript(args);
+
+      Lab.expect(args[0]).to.eql('convert');
+      Lab.expect(args).to.contain('foo');
+
+      done();
+    });
   });
 
 });
