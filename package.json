@@ -2,7 +2,7 @@
   "name": "ndm",
   "version": "2.4.0",
   "description": "ndm allows you to deploy OS-specific service-wrappers directly from npm-packages.",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "bin": "./bin/ndm.js",
   "scripts": {
     "test": "lab -c --timeout=8000"
