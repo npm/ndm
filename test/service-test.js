@@ -390,4 +390,24 @@ Lab.experiment('service', function() {
     });
   });
 
+  Lab.experiment('_fixPath', function() {
+    Lab.it('should replace ./ with absolute path to working directory', function(done) {
+      var service = Service.allServices()[0],
+        arg = service._fixPath('./foo');
+
+      Lab.expect(arg).to.eql(path.resolve('./foo'));
+
+      done();
+    });
+
+    Lab.it('should replace ~/ with absolute path to the home directory', function(done) {
+      var service = Service.allServices()[0],
+        arg = service._fixPath('~/foo');
+
+      Lab.expect(arg).to.eql(process.env['HOME'] + '/foo');
+
+      done();
+    });
+  });
+
 });
