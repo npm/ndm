@@ -257,6 +257,29 @@ Lab.experiment('service', function() {
 
   });
 
+  Lab.experiment('removeScript', function() {
+
+    Lab.it('should remove a generated script', function(done) {
+      Config({
+        platform: 'darwin',
+        daemonsDirectory: './'
+      });
+
+      //generate a script so we have something to remove
+      var service = Service.allServices()[0]
+      service.generateScript();
+
+      service.removeScript();
+
+      var exists = fs.existsSync(service.scriptPath());
+
+      // it should populate the bin for the script.
+      Lab.expect(exists).to.eql(false)
+
+      done();
+    });
+  });
+
   Lab.experiment('listScripts', function() {
     Lab.it('should list scripts provided by service', function(done) {
       Config({
