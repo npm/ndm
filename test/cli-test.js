@@ -173,12 +173,14 @@ Lab.experiment('cli', function() {
       var services = [
         {
           name: 'service1',
+          hasScript: function() { return true; },
           runScript: function(command) {
             Lab.expect(command).to.eql('foo-script');
           }
         },
         {
           name: 'service2',
+          hasScript: function() { return true; },
           runScript: function(command) {
             Lab.expect(command).to.eql('foo-script');
             done();
@@ -211,6 +213,7 @@ Lab.experiment('cli', function() {
         },
         {
           name: 'service2',
+          hasScript: function() { return true; },
           runScript: function(command) {
             Lab.expect(command).to.eql('foo-script');
             done();

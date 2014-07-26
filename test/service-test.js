@@ -275,6 +275,20 @@ Lab.experiment('service', function() {
     })
   });
 
+  Lab.experiment('hasScript', function() {
+    Lab.it('returns true if a script exists corresponding to the name provided', function(done) {
+      var service = Service.allServices()[0];
+      Lab.expect(service.hasScript('foo')).to.eql(true);
+      done();
+    });
+
+    Lab.it('returns false if a script does not exist corresponding to the name provided', function(done) {
+      var service = Service.allServices()[0];
+      Lab.expect(service.hasScript('bar')).to.eql(false);
+      done();
+    });
+  });
+
   Lab.experiment('runScript', function() {
     Lab.it('should execute matching script for service', function(done) {
       Config({
