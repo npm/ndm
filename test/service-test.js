@@ -392,19 +392,19 @@ Lab.experiment('service', function() {
 
   Lab.experiment('_fixPath', function() {
     Lab.it('should replace ./ with absolute path to working directory', function(done) {
-      var service = Service.allServices()[0],
-        arg = service._fixPath('./foo');
+      var service = Service.allServices()[0];
 
-      Lab.expect(arg).to.eql(path.resolve('./foo'));
+      Lab.expect(service._fixPath('./foo')).to.eql(path.resolve('./foo'));
+      Lab.expect(service._fixPath('bar=./foo')).to.eql('bar=' + path.resolve('./foo'));
 
       done();
     });
 
     Lab.it('should replace ~/ with absolute path to the home directory', function(done) {
-      var service = Service.allServices()[0],
-        arg = service._fixPath('~/foo');
+      var service = Service.allServices()[0];
 
-      Lab.expect(arg).to.eql(process.env['HOME'] + '/foo');
+      Lab.expect(service._fixPath('~/foo')).to.eql(process.env['HOME'] + '/foo');
+      Lab.expect(service._fixPath('bar=~/foo')).to.eql('bar=' + process.env['HOME'] + '/foo');
 
       done();
     });
