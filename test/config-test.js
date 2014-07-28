@@ -62,4 +62,10 @@ Lab.experiment('config', function() {
     Lab.expect(config.platform).to.eql('centos');
     done();
   });
+
+  Lab.it('should read .ndmrc, and allow default settings to be overridden', function(done) {
+    var config = Config();
+    Lab.expect(config.logsDirectory).to.eql('/foo/bar/logs');
+    done();
+  });
 });
