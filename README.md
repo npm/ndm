@@ -168,7 +168,7 @@ starting interview:
 
 ## .ndmrc
 
-Add an `~/.ndmrc` file to your home directory, to override ndm's default settings.
+Add an `.ndmrc` file to your home directory, to override ndm's default settings.
 
 Variable names should be camel-case. As an example, the following `.ndmrc` would change the default logging location:
 
