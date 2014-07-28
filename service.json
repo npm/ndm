@@ -55,5 +55,24 @@
       "default": "http://127.0.0.1:8080",
       "description": "url of front facing server"
     }
+  },
+  "@npm/ndm-test2": {
+    "description": "Test program for ndm deployment library.",
+    "scripts": {
+      "thumbd": "./test3.js",
+      "start": "node ./test.js",
+      "echo": "echo hello",
+      "node-echo": "node ./test2.js"
+    },
+    "env": {
+      "PORT": 5000
+    },
+    "args": {
+      "--verbose": "false",
+      "--host": {
+        "default": "0.0.0.0",
+        "description": "what host should we bind to?"
+      }
+    }
   }
 }
