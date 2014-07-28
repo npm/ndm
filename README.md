@@ -166,6 +166,19 @@ starting interview:
 [?] what do you think of dogs? I like 'em.
 ```
 
+## .ndmrc
+
+Add an `.ndmrc` file to your home directory, to override ndm's default settings.
+
+Variable names should be camel-case. As an example, the following `.ndmrc` would change the default logging location:
+
+```ini
+; override ndm CLI variables by adding
+; them to a .ndmrc file. Variables should be
+; cammel case.
+logsDirectory=/foo/bar/logs
+```
+
 ## Disclaimer
 
 ndm is an experiment, based on ops challenges we've been facing at npm. This is a dot release. I'll be moving things around a lot in this library, as we use it for our own deployments.
