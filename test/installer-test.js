@@ -27,6 +27,7 @@ Lab.experiment('installer', function() {
       Lab.expect(function() {
         installer.init();
       }).to.throw(Error, /service\.json already exists/);
+
       done();
     });
 
@@ -37,6 +38,8 @@ Lab.experiment('installer', function() {
       });
 
       installer.init();
+      Lab.expect(fs.existsSync('./test/fixtures/logs')).to.eql(true);
+
       done();
     });
 
@@ -104,6 +107,24 @@ Lab.experiment('installer', function() {
       );
 
       Lab.expect(serviceJson['ndm-test'].scripts.thumbd).to.eql('./test3.js');
+      done();
+    });
+
+    Lab.it('should add module stanza and remove prefix for scoped packages', function(done) {
+      var installer = new Installer({
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
+      });
+
+      installer.init();
+
+      var serviceJson = JSON.parse(
+        fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      Lab.expect(serviceJson['@npm/ndm-test2']).to.be.undefined;
+      Lab.expect(serviceJson['ndm-test2'].module).to.eql('@npm/ndm-test2');
+
       done();
     });
   });
