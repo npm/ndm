@@ -317,6 +317,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/\.\/bin\/foo\.js/);
@@ -344,6 +345,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/--dog also-cute/);
@@ -361,6 +363,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/PORT="8000"/);
@@ -377,6 +380,7 @@ Lab.experiment('service', function() {
       Config({
         headless: true,
         utils: {
+          loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
           exec: function(cmd, cb) {
             Lab.expect(cmd).to.match(/--timeout=8000/);
@@ -429,6 +433,20 @@ Lab.experiment('service', function() {
       Lab.expect(service._fixPath('~/foo')).to.eql(process.env['HOME'] + '/foo');
       Lab.expect(service._fixPath('bar=~/foo')).to.eql('bar=' + process.env['HOME'] + '/foo');
 
+      done();
+    });
+  });
+
+  Lab.experiment('_workingDirectory', function() {
+    Lab.it('uses ./node_modules/<service-name> if not self-referential module', function(done) {
+      var service = Service.allServices()[0];
+      Lab.expect(service.workingDirectory).to.match(/node_modules\/ndm-test/);
+      done();
+    });
+
+    Lab.it('uses ./ if self-referential module', function(done) {
+      var service = Service.allServices()[2];
+      Lab.expect(service.workingDirectory).to.eql(path.resolve(__dirname, '../'));
       done();
     });
   });

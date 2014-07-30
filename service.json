@@ -56,23 +56,14 @@
       "description": "url of front facing server"
     }
   },
-  "@npm/ndm-test2": {
-    "description": "Test program for ndm deployment library.",
+  "ndm": {
+    "description": "example of a service generated from within its own directory",
     "scripts": {
-      "thumbd": "./test3.js",
-      "start": "node ./test.js",
-      "echo": "echo hello",
-      "node-echo": "node ./test2.js"
+      "thumbd": "./ndm.js"
     },
     "env": {
       "PORT": 5000
     },
-    "args": {
-      "--verbose": "false",
-      "--host": {
-        "default": "0.0.0.0",
-        "description": "what host should we bind to?"
-      }
-    }
+    "args": {}
   }
 }
