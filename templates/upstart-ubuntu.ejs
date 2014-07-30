@@ -3,7 +3,7 @@ description "<%= description %>"
 start on stopped networking
 stop on runlevel [016]
 
-setuid ubuntu
+setuid <%= uid %>
 
 limit nofile 1000000 1000000
 
