@@ -255,6 +255,29 @@ Lab.experiment('service', function() {
       done();
     });
 
+    Lab.it('should pass arguments after -- to generated script', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './'
+      });
+
+      Array.prototype.push.apply(process.argv, ['--', '--foovar', 'barvalue'])
+
+      var service = Service.allServices()[0]
+      service.generateScript();
+
+      // inspect the generated script, and make sure we've
+      // populated the appropriate stanzas.
+      var script = fs.readFileSync(service.scriptPath()).toString();
+
+      sharedAssertions(script);
+
+      // it should populate the bin for the script.
+      Lab.expect(script).to.match(/--foovar barvalue/)
+
+      done();
+    });
+
   });
 
   Lab.experiment('removeScript', function() {

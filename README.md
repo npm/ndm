@@ -135,6 +135,12 @@ To install your ndm-wrapped services, copy the package directory to your host sy
 
 On systems like Ubuntu, you'll need to run this as root so ndm has permission to add the upstart config file to `/etc/init`. On OS X, you can run it as any user to create a local launch control script.
 
+Command line arguments can be passed to the service wrapper at generation time, by appending them after `--`:
+
+```bash
+ndm generate -- --verbose true
+```
+
 ## Starting and stopping
 
 You can start and stop the services manually using your host's native daemon control: `upstart`, `launchctl`, or `initctl`. Or you can use `ndm start` and `ndm stop` from inside an ndm wrapper directory to start & stop all the wrapped services.
