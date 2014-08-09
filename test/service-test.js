@@ -8,6 +8,23 @@ var Lab = require('lab'),
 
 Lab.experiment('service', function() {
 
+  Lab.experiment('allServices', function() {
+    Lab.it('returns all services if no filter is provided', function(done) {
+      Lab.expect(Service.allServices().length).to.eql(3);
+      done();
+    });
+
+    Lab.it('should filter a specific service if filter is argument is provided', function(done) {
+      var services = Service.allServices('ndm'),
+        service = services[0];
+
+      Lab.expect(services.length).to.eql(1);
+      Lab.expect(service.name).to.eql('ndm');
+
+      done();
+    });
+  });
+
   Lab.experiment('env', function() {
     Lab.it('should default module to service name, if no module stanza provided', function(done) {
       var service = Service.allServices()[0];

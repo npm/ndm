@@ -132,7 +132,7 @@ Lab.experiment('cli', function() {
 
       var cli = Cli({
         service: {
-          allServices: function() { return services; }
+          allServices: function(serviceNameFilter) { return services; }
         }
       });
 
@@ -159,7 +159,9 @@ Lab.experiment('cli', function() {
 
       var cli = Cli({
         service: {
-          allServices: function() { return services; }
+          allServices: function(serviceNameFilter) {
+            return _.filter(services, function(service) { return service.name === serviceNameFilter });
+          }
         }
       });
 
@@ -223,7 +225,9 @@ Lab.experiment('cli', function() {
 
       var cli = Cli({
         service: {
-          allServices: function() { return services; }
+          allServices: function(serviceNameFilter) {
+            return _.filter(services, function(service) { return service.name === serviceNameFilter });
+          }
         }
       });
 
