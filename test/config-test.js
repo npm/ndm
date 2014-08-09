@@ -22,7 +22,7 @@ Lab.experiment('config', function() {
     var prefix = '/path/to/prefix';
 
     var config = Config({
-      prefix: prefix,
+      modulePrefix: prefix,
       global: 'banana'
     });
 
