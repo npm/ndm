@@ -78,6 +78,13 @@ Lab.experiment('interview', function() {
     Lab.beforeEach(function(done) {
       rimraf.sync('./test/fixtures/service.json');
       rimraf.sync('./test/fixtures/logs');
+
+      // generate the service.json.
+      (new Installer({
+        baseWorkingDirectory: './test/fixtures',
+        serviceJsonPath: './test/fixtures/service.json'
+      })).init();
+
       done();
     });
 
@@ -88,14 +95,6 @@ Lab.experiment('interview', function() {
     });
 
     Lab.it('persists service.json with answers to questions', function(done) {
-      // generate the service.json.
-      var installer = new Installer({
-        baseWorkingDirectory: './test/fixtures',
-        serviceJsonPath: './test/fixtures/service.json'
-      });
-
-      installer.init();
-
       // run the interview.
       var interview = new Interview({
         serviceJsonPath: './test/fixtures/service.json',
@@ -114,6 +113,68 @@ Lab.experiment('interview', function() {
       // validate the service.json written.
       var serviceJson = JSON.parse(
         fs.readFileSync('./test/fixtures/service.json').toString()
+      );
+
+      Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');
+
+      done();
+    });
+
+    Lab.it('logs an error if no overwrite is falsy', function(done) {
+      // run the interview.
+      var interview = new Interview({
+        logger: {
+          error: function(msg) {
+            Lab.expect(msg).to.eql('aborted writing service.json');
+            done();
+          }
+        },
+        serviceJsonPath: './test/fixtures/service.json',
+        inquirer: {
+          prompt: function(questions, cb) { cb({}) }
+        }
+      });
+
+      interview.run(function() {});
+    });
+
+    Lab.it('if tmpServiceJsonPath given it does not prompt about overwriting', function(done) {
+      // run the interview.
+      var interview = new Interview({
+        tmpServiceJsonPath: '/tmp/service.json',
+        serviceJsonPath: './test/fixtures/service.json',
+        inquirer: {
+          prompt: function(questions, cb) {
+            cb({
+              '--host': '2.2.2.2'
+            })
+          }
+        }
+      });
+
+      interview.run(function() {});
+      done();
+    });
+
+    Lab.it('if tmpServiceJsonPath given outputs service.json to alternate location', function(done) {
+      // run the interview.
+      var interview = new Interview({
+        tmpServiceJsonPath: '/tmp/service.json',
+        serviceJsonPath: './test/fixtures/service.json',
+        inquirer: {
+          prompt: function(questions, cb) {
+            cb({
+              '--host': '2.2.2.2'
+            })
+          }
+        }
+      });
+
+      interview.run(function() {});
+
+      // validate the service.json written.
+      var serviceJson = JSON.parse(
+        fs.readFileSync('/tmp/service.json').toString()
       );
 
       Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');

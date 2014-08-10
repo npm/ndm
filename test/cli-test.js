@@ -234,4 +234,81 @@ Lab.experiment('cli', function() {
       cli['run-script']('foo-script');
     });
   });
+
+  Lab.experiment('install', function() {
+
+    Lab.it('runs an interview with a temporary service.json path', function(done) {
+      // A mock Interview object.
+      var FakeInterview = function(opts) {
+        Lab.expect(opts.tmpServiceJsonPath).to.match(/.*\.json/)
+        done();
+      };
+      FakeInterview.prototype.run = function() {};
+
+      var cli = Cli({
+        Interview: FakeInterview,
+        service: {
+          allServices: function() { return [] }
+        }
+      });
+
+      cli.install();
+    });
+
+    Lab.it('generates service wrappers after running the interview', function(done) {
+      // A mock Interview object.
+      var FakeInterview = function() {};
+      FakeInterview.prototype.run = function(cb) { cb(); };
+
+      var cli = Cli({
+        Interview: FakeInterview,
+        service: {
+          printRunMessage: function() {},
+          allServices: function() {
+            return [{
+              scriptPath: function() {},
+              generateScript: function() {
+                done(); // we called generate script success!
+              }
+            }]
+          }
+        }
+      });
+
+      cli.install();
+    });
+
+    Lab.it('removes the temporary service.json once scripts are generated', function(done) {
+      // A mock Interview object.
+      var serviceJsonPath = null,
+        FakeInterview = function(opts) {
+          serviceJsonPath = opts.tmpServiceJsonPath;
+        };
+
+      FakeInterview.prototype.run = function(cb) { cb(); };
+
+      var cli = Cli({
+        rimraf: {
+          sync: function(path) {
+            Lab.expect(path).to.eql(serviceJsonPath);
+            done();
+          }
+        },
+        Interview: FakeInterview,
+        service: {
+          printRunMessage: function() {},
+          allServices: function() {
+            return [{
+              scriptPath: function() {},
+              generateScript: function() {}
+            }]
+          }
+        }
+      });
+
+      cli.install();
+    });
+
+  });
+
 });

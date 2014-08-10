@@ -21,7 +21,7 @@ How to build an ndm-ready package:
 3. Add service dependencies to your _package.json_: `npm install my-service-module --save`
 4. Generate your service.json: `ndm init`.
 5. Edit _service.json_ to add appropriate `args` and `envs` for your server.
-6. When you're ready, generate service wrappers (upstart, initctl, etc): `ndm generate`.
+6. When you're ready, generate service wrappers (upstart, initctl, etc): `ndm install`.
 7. Start the service wrappers you've just generated: `ndm start`.
 
 ## Anatomy of an ndm service
@@ -131,14 +131,14 @@ To add new dependencies:
 
 ## Installing the services
 
-To install your ndm-wrapped services, copy the package directory to your host system using whatever means you prefer. Then from inside the directory, run `ndm generate`.
+To install your ndm-wrapped services, copy the package directory to your host system using whatever means you prefer. Then from inside the directory, run `ndm install`.
 
 On systems like Ubuntu, you'll need to run this as root so ndm has permission to add the upstart config file to `/etc/init`. On OS X, you can run it as any user to create a local launch control script.
 
 Command line arguments can be passed to the service wrapper at generation time, by appending them after `--`:
 
 ```bash
-ndm generate -- --verbose true
+ndm install -- --verbose true
 ```
 
 ## Starting and stopping
