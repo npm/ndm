@@ -19,6 +19,7 @@
     "rc": "^0.4.0",
     "rimraf": "^2.2.8",
     "string": "^1.8.1",
+    "temp": "^0.8.1",
     "yargs": "^1.2.6"
   },
   "devDependencies": {
