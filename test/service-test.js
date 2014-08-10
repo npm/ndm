@@ -491,4 +491,75 @@ Lab.experiment('service', function() {
     });
   });
 
+  Lab.experiment('_serviceJsonPath', function() {
+    Lab.it('returns serviceJsonPath if it exists', function(done) {
+      var expectedPath = path.resolve(__dirname, '../service.json'),
+        config = Config({
+          headless: true,
+          serviceJsonPath: expectedPath,
+        });
+
+      Lab.expect(Service._serviceJsonPath()).to.eql(expectedPath);
+      Lab.expect(config.logsDirectory).to.eql(config.defaultLogsDirectory());
+
+      done();
+    });
+
+    Lab.it('finds service in ./node_modules if no service.json found elsewhere', function(done) {
+      var config = Config({
+        headless: true,
+        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
+      });
+
+      Lab.expect(Service._serviceJsonPath('ndm-test')).to.match(/\/node_modules\/ndm-test\/service\.json/);
+      Lab.expect(config.serviceJsonPath).to.match(/\/node_modules\/ndm-test\/service\.json/);
+      Lab.expect(config.baseWorkingDirectory).to.match(/\/node_modules\/ndm-test/);
+
+      done();
+    });
+
+    Lab.it('finds service in modulePrefix directory if no service.json found elsewhere', function(done) {
+      var config = Config({
+        headless: true,
+        modulePrefix: './test/fixtures',
+        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
+      });
+
+      Lab.expect(Service._serviceJsonPath('ndm-test')).to.match(
+        /\/fixtures\/node_modules\/ndm-test\/service\.json/
+      );
+      Lab.expect(config.serviceJsonPath).to.match(
+        /\/fixtures\/node_modules\/ndm-test\/service\.json/
+      );
+      done();
+    });
+
+    Lab.it('uses os logging directory if service is found using discovery', function(done) {
+      var config = Config({
+        headless: true,
+        modulePrefix: './test/fixtures',
+        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
+      });
+
+      Service._serviceJsonPath('ndm-test');
+
+      Lab.expect(config.logsDirectory).to.eql(config.osLogsDirectory);
+      done();
+    });
+
+    Lab.it('uses logging directory flag if an override is provided', function(done) {
+      var config = Config({
+        headless: true,
+        logsDirectory: '/special/logs',
+        modulePrefix: './test/fixtures',
+        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
+      });
+
+      Service._serviceJsonPath('ndm-test');
+
+      Lab.expect(config.logsDirectory).to.eql('/special/logs');
+      done();
+    });
+  });
+
 });

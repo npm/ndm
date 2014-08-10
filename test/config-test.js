@@ -18,20 +18,6 @@ Lab.experiment('config', function() {
     done();
   });
 
-  Lab.it('should allow global package overrides', function(done) {
-    var prefix = '/path/to/prefix';
-
-    var config = Config({
-      prefix: prefix,
-      global: 'banana'
-    });
-
-    Lab.expect(config.baseWorkingDirectory).to.eql(prefix + '/lib/node_modules/banana');
-    Lab.expect(config.serviceJsonPath).to.eql(prefix + '/lib/node_modules/banana/service.json');
-    Lab.expect(config.logsDirectory).to.eql(prefix + '/lib/node_modules/banana/logs');
-    done();
-  });
-
   Lab.it('should allow defaults to be overridden by environment variables', function(done) {
     var config = Config({
       env: {NDM_BASE_WORKING_DIRECTORY: '/foo'}
@@ -79,7 +65,7 @@ Lab.experiment('config', function() {
 
   Lab.it('should read .ndmrc, and allow default settings to be overridden', function(done) {
     var config = Config();
-    Lab.expect(config.logsDirectory).to.eql('/foo/bar/logs');
+    Lab.expect(config.releaseInfoFile).to.eql('/foo/bar/release');
     done();
   });
 
