@@ -138,29 +138,6 @@ Lab.experiment('interview', function() {
       interview.run(function() {});
     });
 
-    Lab.it('does not prompt about overwriting if no questions are found', function(done) {
-      // run the interview.
-      var interview = new Interview({
-        serviceJsonPath: './test/fixtures/empty-service.json',
-        _updateServiceVariables: function() {
-          // success!
-          done();
-        },
-        inquirer: {
-          prompt: function(questions, cb) { cb(); }
-        }
-      });
-
-      interview.run(function() {});
-
-      // validate the service.json written.
-      var serviceJson = JSON.parse(
-        fs.readFileSync('./test/fixtures/empty-service.json').toString()
-      );
-
-      done();
-    });
-
     Lab.it('if tmpServiceJsonPath given it does not prompt about overwriting', function(done) {
       // run the interview.
       var interview = new Interview({
