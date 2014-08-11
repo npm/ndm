@@ -65,7 +65,9 @@ Lab.experiment('config', function() {
 
   Lab.it('should read .ndmrc, and allow default settings to be overridden', function(done) {
     var config = Config();
-    Lab.expect(config.logsDirectory).to.eql('/foo/bar/logs');
+    Lab.expect(config.releaseInfoFile).to.eql('/foo/bar/release');
     done();
   });
+
+
 });

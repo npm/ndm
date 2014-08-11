@@ -1,4 +1,4 @@
 ; override ndm CLI variables by adding
 ; them to a .ndmrc file. Variables should be
 ; cammel case.
-logsDirectory=/foo/bar/logs
+releaseInfoFile=/foo/bar/release
