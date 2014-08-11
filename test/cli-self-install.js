@@ -8,7 +8,7 @@ Lab.experiment('cli-self-install', function() {
   Lab.experiment('init', function() {
     Lab.it('should infer module name based on package.json', function(done) {
       var ndm = require('../lib')('ndm-test');
-      Lab.expect(ndm.serviceName).to.eql('ndm-test');
+      Lab.expect(ndm.filter).to.eql('ndm-test');
       done();
     });
 
