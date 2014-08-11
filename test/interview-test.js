@@ -1,8 +1,8 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
 var Lab = require('lab'),
-  Interview = require('../lib').Interview,
-  Installer = require('../lib/').Installer,
+  Interview = require('../lib/interview'),
+  Installer = require('../lib/installer'),
   rimraf = require('rimraf'),
   fs = require('fs');
 

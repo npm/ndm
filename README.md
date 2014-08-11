@@ -185,6 +185,77 @@ Variable names should be camel-case. As an example, the following `.ndmrc` would
 logsDirectory=/foo/bar/logs
 ```
 
+## The ndm API
+
+Rather than using the ndm bin to manage services, you can use the ndm API to create a self-installable service:
+
+1. add ndm to your package.json dependencies.
+2. add a service.json to the root of your module with a scripts stanza which includes:
+  * a `start` script, which is what ndm will run by default.
+  * any other scripts that you'd like to expose via `runScript`.
+
+**service.json example:**
+
+```json
+{
+  "ndm-test": {
+    "description": "ndm test service",
+    "scripts": {
+      "start": "node ./test.js",
+      "echo": "echo hello",
+      "node-echo": "node ./test2.js"
+    },
+    "env": {
+      "PORT": 8000,
+      "USER": {
+  "description": "enter a username."
+      }
+    }
+  }
+}
+```
+
+3. update your package's bin to look something like this (the argument passed to ndm's require is the name of the module in the sevice.json that you'd like to run):
+
+```
+#!/usr/bin/env node
+
+var argv = require('yargs').argv,
+  ndm = require('ndm')('ndm-test');
+
+switch(argv._[0]) {
+  case 'install':
+    ndm.install();
+    break;
+  case 'remove':
+    ndm.remove();
+    break;
+  case 'start':
+    ndm.start();
+    break;
+  case 'restart':
+    ndm.restart();
+    break;
+  case 'stop':
+    ndm.stop();
+    break;
+  case 'list-scripts':
+    ndm.listScripts();
+    break;
+  case 'run-script':
+    ndm.runScript();
+    break;
+}
+```
+
+ndm-test is published to npm, try it out:
+
+```bash
+npm install ndm-test -g
+ndm-test install
+ndm-test start
+```
+
 ## Disclaimer
 
 ndm is an experiment, based on ops challenges we've been facing at npm. This is a dot release. I'll be moving things around a lot in this library, as we use it for our own deployments.

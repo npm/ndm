@@ -1,6 +1,6 @@
 var Lab = require('lab'),
   path = require('path'),
-  Config = require('../lib').Config,
+  Config = require('../lib/config'),
   _ = require('lodash');
 
 Lab.experiment('config', function() {
@@ -48,7 +48,7 @@ Lab.experiment('config', function() {
       platform: 'banana'
     });
 
-    var config = (require('../lib').Config)();
+    var config = (require('../lib/config'))();
 
     Lab.expect(config.platform).to.eql('banana');
     done();
