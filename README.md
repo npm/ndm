@@ -6,7 +6,14 @@ ndm makes it easy to deploy a complex service-oriented-architecture by allowing 
 
 ndm currently supports Centos, OS X, and Ubuntu.
 
-## Installing
+**Table of Contents:**
+
+* [Installation](#install)
+* [what's service.json](#servicejson)
+* [asking about environment variables](#interview)
+* [ndm API (create self-installing packages)](#api)
+
+## Installing <a name="install"></a>
 
 * `npm install ndm -g`
 
@@ -70,7 +77,7 @@ A node-packaged service built for ndm can provide some hints in its package.json
 
 Note the `environment` field and its subfields. `environment.args` is a map of arguments that should be passed to the ndm service. `ndm.env` is a map of environment variables that should be passed to your ndm service.
 
-### The `service.json` file
+### The `service.json` file <a name="servicejson"></a>
 
 The ndm wrapper must also have a **service.json** file, which describes how to run the services. Run `ndm init` to generate _service.json_ from your installed npm dependencies. The init script will copy default values from the `environment` stanza in each service's **package.json**. You can then edit the defaults if you need to change anything.
 
@@ -149,7 +156,7 @@ You can start and stop the services manually using your host's native daemon con
 
 All console.log and console.error output is recorded in the `logs/` directory, in files named `<service-name>.log`. This is separate from whatever internally-managed logging the service might do.
 
-## Interviewing the User
+## Interviewing the User <a name="interview"></a>
 
 Rather than providing set-in-stone default values, you can opt to interview your user. To interview a user for important variables, write your default values in this form:
 
@@ -185,7 +192,7 @@ Variable names should be camel-case. As an example, the following `.ndmrc` would
 logsDirectory=/foo/bar/logs
 ```
 
-## The ndm API
+## The ndm API <a name="api"></a>
 
 Rather than using the ndm bin to manage services, you can use the ndm API to create a self-installable service:
 
