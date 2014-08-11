@@ -9,7 +9,7 @@ ndm currently supports Centos, OS X, and Ubuntu.
 **Table of Contents:**
 
 * [Installation](#install)
-* [What's service.json](#servicejson)
+* [What's service.json?](#servicejson)
 * [Getting Information From Your User](#interview)
 * [ndm API (create self-installing packages)](#api)
 
