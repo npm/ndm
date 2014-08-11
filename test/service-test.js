@@ -2,8 +2,8 @@ require('../lib/config')({headless: true}); // turn off output in tests.
 
 var Lab = require('lab'),
   path = require('path'),
-  Config = require('../lib').Config,
-  Service = require('../lib').Service,
+  Config = require('../lib/config'),
+  Service = require('../lib/service'),
   fs = require('fs');
 
 Lab.experiment('service', function() {

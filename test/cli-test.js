@@ -2,7 +2,7 @@ require('../lib/config')({headless: true}); // turn off output in tests.
 
 var Lab = require('lab'),
   path = require('path'),
-  Cli = require('../lib').Cli,
+  Cli = require('../lib/cli'),
   _ = require('lodash');
 
 Lab.experiment('cli', function() {
