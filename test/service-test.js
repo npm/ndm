@@ -531,6 +531,19 @@ Lab.experiment('service', function() {
       done();
     });
 
+    Lab.it('returns package.json path if no service.json found', function(done) {
+      var config = Config({
+          headless: true,
+          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+        });
+
+      Lab.expect(Service._serviceJsonPath()).to.eql(
+        path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
+      );
+
+      done();
+    });
+
     Lab.it('finds service in ./node_modules if no service.json found elsewhere', function(done) {
       var config = Config({
         headless: true,
@@ -540,6 +553,19 @@ Lab.experiment('service', function() {
       Lab.expect(Service._serviceJsonPath('ndm-test')).to.match(/\/node_modules\/ndm-test\/service\.json/);
       Lab.expect(config.serviceJsonPath).to.match(/\/node_modules\/ndm-test\/service\.json/);
       Lab.expect(config.baseWorkingDirectory).to.match(/\/node_modules\/ndm-test/);
+
+      done();
+    });
+
+    Lab.it('falls back to package.json from service.json when installing global module', function(done) {
+      var config = Config({
+        headless: true,
+        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
+      });
+
+      Lab.expect(Service._serviceJsonPath('mocha')).to.match(/\/node_modules\/mocha\/package\.json/);
+      Lab.expect(config.serviceJsonPath).to.match(/\/node_modules\/mocha\/package\.json/);
+      Lab.expect(config.baseWorkingDirectory).to.match(/\/node_modules\/mocha/);
 
       done();
     });
@@ -586,6 +612,25 @@ Lab.experiment('service', function() {
       Lab.expect(config.logsDirectory).to.eql('/special/logs');
       done();
     });
+  });
+
+  Lab.experiment('parsePackageJson', function() {
+
+    Lab.it('can load a service from package.json rather than service.json', function(done) {
+      var serviceJson = JSON.parse(fs.readFileSync(
+        './node_modules/ndm-test/package.json', 'utf-8'
+      ));
+
+      var services = Service._parsePackageJson(null, serviceJson),
+        service = services[0];
+
+      Lab.expect(services.length).to.eql(1);
+      Lab.expect(service.name).to.eql('ndm-test');
+      Lab.expect(service.scripts.start).to.eql('node ./test.js');
+
+      done();
+    });
+
   });
 
 });
