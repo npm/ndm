@@ -614,19 +614,17 @@ Lab.experiment('service', function() {
     });
   });
 
-  Lab.experiment('parsePackageJson', function() {
+  Lab.experiment('transformPackageJson', function() {
 
     Lab.it('can load a service from package.json rather than service.json', function(done) {
       var serviceJson = JSON.parse(fs.readFileSync(
         './node_modules/ndm-test/package.json', 'utf-8'
       ));
 
-      var services = Service._parsePackageJson(null, serviceJson),
-        service = services[0];
+      var serviceJson = Service.transformPackageJson(serviceJson);
 
-      Lab.expect(services.length).to.eql(1);
-      Lab.expect(service.name).to.eql('ndm-test');
-      Lab.expect(service.scripts.start).to.eql('node ./test.js');
+      Lab.expect(Object.keys(serviceJson)[0]).to.eql('ndm-test');
+      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
 
       done();
     });
