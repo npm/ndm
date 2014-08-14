@@ -41,6 +41,16 @@
       "awesome"
     ]
   },
+  "ndm": {
+    "description": "example of a service generated from within its own directory",
+    "scripts": {
+      "thumbd": "./ndm.js"
+    },
+    "env": {
+      "PORT": 5000
+    },
+    "args": {}
+  },
   "env": {
     "APP": "my-test-app",
     "ENVIRONMENT": {
@@ -54,16 +64,7 @@
     "--frontdoor-url": {
       "default": "http://127.0.0.1:8080",
       "description": "url of front facing server"
-    }
-  },
-  "ndm": {
-    "description": "example of a service generated from within its own directory",
-    "scripts": {
-      "thumbd": "./ndm.js"
     },
-    "env": {
-      "PORT": 5000
-    },
-    "args": {}
+    "--dog": "#bada55"
   }
 }

@@ -59,26 +59,14 @@ Lab.experiment('service', function() {
 
   Lab.experiment('args', function() {
     Lab.it('should load the global args variable', function(done) {
-      var service = Service.allServices()[1];
+      var service = Service.allServices()[0];
       Lab.expect(service.args['--batman']).to.eql('greatest-detective');
       done();
     });
 
     Lab.it('should override global args with service specific args', function(done) {
-      var service = Service.allServices()[1];
-      Lab.expect(service.args['--spider-man']).to.eql('sad');
-      done();
-    });
-
-    Lab.it('should handle array args', function(done) {
-      var service = Service.allServices()[1];
-      Lab.expect(service.args['--apple']).to.eql('banana');
-      done();
-    });
-
-    Lab.it('should handle flags, without creating undefined arguments', function(done) {
-      var service = Service.allServices()[1];
-      Lab.expect(service.args.awesome).to.not.be.undefined;
+      var service = Service.allServices()[0];
+      Lab.expect(service.args['--dog']).to.eql('also-cute');
       done();
     });
 
@@ -89,9 +77,27 @@ Lab.experiment('service', function() {
     });
 
     Lab.it('should handle an object rather than a value for global args', function(done) {
-      var service = Service.allServices()[1];
+      var service = Service.allServices()[2];
       Lab.expect(service.args['--frontdoor-url']).to.eql('http://127.0.0.1:8080');
       done();
+    });
+
+    Lab.experiment('array arguments', function() {
+      Lab.it('should handle array args', function(done) {
+        var service = Service.allServices()[1];
+        Lab.expect(service.args.indexOf('--apple')).to.be.gt(-1);
+        done();
+      });
+
+      Lab.it('should combine global args with service level args', function(done) {
+        Config({
+          serviceJsonPath: './test/fixtures/args-service.json'
+        });
+        var service = Service.allServices()[0];
+        Lab.expect(service.args[0]).to.eql('a');
+        Lab.expect(service.args.indexOf("--apple")).to.not.eql(-1);
+        done();
+      });
     });
   });
 
@@ -291,6 +297,26 @@ Lab.experiment('service', function() {
 
       // it should populate the bin for the script.
       Lab.expect(script).to.match(/--foovar barvalue/)
+
+      done();
+    });
+
+    Lab.it('should output an array of arguments appropriately to generated script', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        serviceJsonPath: './test/fixtures/args-service.json'
+      });
+
+      var service = Service.allServices()[0]
+      service.generateScript();
+
+      // inspect the generated script, and make sure we've
+      // populated the appropriate stanzas.
+      var script = fs.readFileSync(service.scriptPath()).toString();
+
+      // it should populate the bin for the script.
+      Lab.expect(script).to.match(/--spider-man sad/)
 
       done();
     });
