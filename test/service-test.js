@@ -108,11 +108,25 @@ Lab.experiment('service', function() {
         daemonsDirectory: './'
       });
 
-      var service = Service.allServices()[0]
-      Lab.expect(service._startCommand()).to.match(/launchctl.*load.*/)
-      Lab.expect(service._restartCommand()).to.match(/launchctl.*unload.*launchctl.*load/)
-      Lab.expect(service._stopCommand()).to.match(/launchctl.*unload.*/)
+      var service = Service.allServices()[0];
 
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.match(/launchctl.*load.*/)
+      };
+
+      service.runCommand('start');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.match(/launchctl.*unload.*launchctl.*load/)
+      };
+
+      service.runCommand('restart');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.match(/launchctl.*unload.*/);
+      };
+
+      service.runCommand('stop');
       done();
     });
 
@@ -123,9 +137,24 @@ Lab.experiment('service', function() {
       });
 
       var service = Service.allServices()[0]
-      Lab.expect(service._startCommand()).to.eql("initctl start ndm-test")
-      Lab.expect(service._restartCommand()).to.eql("initctl restart ndm-test")
-      Lab.expect(service._stopCommand()).to.eql("initctl stop ndm-test")
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("initctl start ndm-test");
+      };
+
+      service.runCommand('start');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("initctl restart ndm-test");
+      };
+
+      service.runCommand('restart');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("initctl stop ndm-test");
+      };
+
+      service.runCommand('stop');
 
       done();
     });
@@ -136,10 +165,25 @@ Lab.experiment('service', function() {
         daemonsDirectory: './'
       });
 
-      var service = Service.allServices()[0]
-      Lab.expect(service._startCommand()).to.eql("service ndm-test start")
-      Lab.expect(service._restartCommand()).to.eql("service ndm-test restart")
-      Lab.expect(service._stopCommand()).to.eql("service ndm-test stop")
+      var service = Service.allServices()[0];
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("service ndm-test start");
+      };
+
+      service.runCommand('start');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("service ndm-test restart");
+      };
+
+      service.runCommand('restart');
+
+      service.execCommand = function(command, cb) {
+        Lab.expect(command).to.eql("service ndm-test stop");
+      };
+
+      service.runCommand('stop');
 
       done();
     });
