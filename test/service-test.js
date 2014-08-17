@@ -174,19 +174,21 @@ Lab.experiment('service', function() {
           daemonsDirectory: './'
         });
 
-        var service = Service.allServices()[0]
-        service.generateScript();
+        var service = Service.allServices()[0];
 
-        // inspect the generated script, and make sure we've
-        // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
 
-        sharedAssertions(script);
+          sharedAssertions(script);
 
-        // it should populate the bin for the script.
-        Lab.expect(script).to.match(/>.\/test.js/)
+          // it should populate the bin for the script.
+          Lab.expect(script).to.match(/>.\/test.js/)
 
-        done();
+          done();
+        });
+
       });
     });
 
@@ -199,21 +201,23 @@ Lab.experiment('service', function() {
         });
 
         var service = Service.allServices()[0]
-        service.generateScript();
 
-        // inspect the generated script, and make sure we've
-        // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
 
-        sharedAssertions(script);
+          sharedAssertions(script);
 
-        // we should not try to su.
-        Lab.expect(script).to.not.match(/su -/);
+          // we should not try to su.
+          Lab.expect(script).to.not.match(/su -/);
 
-        // it should populate the bin for the script.
-        Lab.expect(script).to.match(/bin\/node \.\/test.js/)
+          // it should populate the bin for the script.
+          Lab.expect(script).to.match(/bin\/node \.\/test.js/)
 
-        done();
+          done();
+        });
+
       });
 
       Lab.it('should switch su to uid user, if uid is provided', function(done) {
@@ -223,19 +227,20 @@ Lab.experiment('service', function() {
           uid: 'npm'
         });
 
-        var service = Service.allServices()[0]
-        service.generateScript();
+        var service = Service.allServices()[0];
 
-        // inspect the generated script, and make sure we've
-        // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
 
-        sharedAssertions(script);
+          sharedAssertions(script);
 
-        // we should try to step down our privileges.
-        Lab.expect(script).to.match(/su - npm/);
+          // we should try to step down our privileges.
+          Lab.expect(script).to.match(/su - npm/);
 
-        done();
+          done();
+        });
       });
 
     });
@@ -249,18 +254,19 @@ Lab.experiment('service', function() {
         });
 
         var service = Service.allServices()[0]
-        service.generateScript();
 
-        // inspect the generated script, and make sure we've
-        // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
 
-        sharedAssertions(script);
+          sharedAssertions(script);
 
-        // it should populate the bin for the script.
-        Lab.expect(script).to.match(/bin\/node \.\/test.js/)
+          // it should populate the bin for the script.
+          Lab.expect(script).to.match(/bin\/node \.\/test.js/)
 
-        done();
+          done();
+        });
       });
 
     });
@@ -287,18 +293,19 @@ Lab.experiment('service', function() {
       Array.prototype.push.apply(process.argv, ['--', '--foovar', 'barvalue'])
 
       var service = Service.allServices()[0]
-      service.generateScript();
 
-      // inspect the generated script, and make sure we've
-      // populated the appropriate stanzas.
-      var script = fs.readFileSync(service.scriptPath()).toString();
+      service.generateScript(function() {
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service.scriptPath()).toString();
 
-      sharedAssertions(script);
+        sharedAssertions(script);
 
-      // it should populate the bin for the script.
-      Lab.expect(script).to.match(/--foovar barvalue/)
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/--foovar barvalue/)
 
-      done();
+        done();
+      });
     });
 
     Lab.it('should output an array of arguments appropriately to generated script', function(done) {
@@ -308,17 +315,18 @@ Lab.experiment('service', function() {
         serviceJsonPath: './test/fixtures/args-service.json'
       });
 
-      var service = Service.allServices()[0]
-      service.generateScript();
+      var service = Service.allServices()[0];
 
-      // inspect the generated script, and make sure we've
-      // populated the appropriate stanzas.
-      var script = fs.readFileSync(service.scriptPath()).toString();
+      service.generateScript(function() {
+        // inspect the generated script, and make sure we've
+        // populated the appropriate stanzas.
+        var script = fs.readFileSync(service.scriptPath()).toString();
 
-      // it should populate the bin for the script.
-      Lab.expect(script).to.match(/--spider-man sad/)
+        // it should populate the bin for the script.
+        Lab.expect(script).to.match(/--spider-man sad/)
 
-      done();
+        done();
+      });
     });
 
   });
@@ -332,17 +340,18 @@ Lab.experiment('service', function() {
       });
 
       //generate a script so we have something to remove
-      var service = Service.allServices()[0]
-      service.generateScript();
+      var service = Service.allServices()[0];
 
-      service.removeScript();
+      service.generateScript(function() {
+        service.removeScript(function() {
+          var exists = fs.existsSync(service.scriptPath());
 
-      var exists = fs.existsSync(service.scriptPath());
+          // it should populate the bin for the script.
+          Lab.expect(exists).to.eql(false)
 
-      // it should populate the bin for the script.
-      Lab.expect(exists).to.eql(false)
-
-      done();
+          done();
+        });
+      });
     });
   });
 
