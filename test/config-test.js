@@ -54,9 +54,15 @@ Lab.experiment('config', function() {
     done();
   });
 
-  Lab.it('should detect centos based on a release version file', function(done) {
+  Lab.it('should allow isPlatform to override the platform reported by os.platform()', function(done) {
     var config = Config({
-      releaseInfoFile: './test/fixtures/redhat-release'
+      platformApis: {
+        centos: {
+          platform: 'centos',
+          isPlatform: function() { return true; },
+          configOverrides: {}
+        }
+      }
     });
 
     Lab.expect(config.platform).to.eql('centos');
