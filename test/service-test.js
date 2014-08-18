@@ -289,7 +289,7 @@ Lab.experiment('service', function() {
 
     });
 
-    Lab.experiment('linux', function() {
+    Lab.experiment('ubuntu', function() {
 
       Lab.it('should genterate a script with the appropriate variables populated', function(done) {
         Config({
@@ -368,6 +368,46 @@ Lab.experiment('service', function() {
 
         // it should populate the bin for the script.
         Lab.expect(script).to.match(/--spider-man sad/)
+
+        done();
+      });
+    });
+
+    Lab.it('should redirect stderr and stdout to log file by default', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        serviceJsonPath: './test/fixtures/args-service.json'
+      });
+
+      var service = Service.allServices()[0];
+
+      service.generateScript(function() {
+        var script = fs.readFileSync(service.scriptPath()).toString();
+
+        // it should redirect script output.
+        Lab.expect(script).to.match(/>>.* 2>&1/);
+
+        done();
+      });
+    });
+
+    Lab.it('should allow stdout/stderr redirect to be overridden by console', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        console: 'log',
+        serviceJsonPath: './test/fixtures/args-service.json'
+      });
+
+      var service = Service.allServices()[0];
+
+      service.generateScript(function() {
+        var script = fs.readFileSync(service.scriptPath()).toString();
+
+        Lab.expect(script).to.not.match(/>>.* 2>&1/);
+        // it should use upstart's logging.
+        Lab.expect(script).to.match(/console log/);
 
         done();
       });
