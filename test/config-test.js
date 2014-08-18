@@ -1,7 +1,9 @@
-var Lab = require('lab'),
+var _ = require('lodash'),
+  Lab = require('lab'),
   path = require('path'),
+  Centos = require('../lib/platform-apis/centos'),
   Config = require('../lib/config'),
-  _ = require('lodash');
+  util = require('util');
 
 Lab.experiment('config', function() {
   Lab.it('should be initialized with sane defaults', function(done) {
@@ -54,9 +56,21 @@ Lab.experiment('config', function() {
     done();
   });
 
-  Lab.it('should detect centos based on a release version file', function(done) {
+  Lab.it('should allow isPlatform to override the platform reported by os.platform()', function(done) {
+    // Create a special Centos platform API
+    // for testing purposes.
+    var C = function() {
+      this.platform = 'centos';
+      this.releaseInfoFile = './test/fixtures/redhat-release';
+    };
+    C.configOverrides = {};
+    util.inherits(C, Centos);
+
+    // Use this mock in our Config.
     var config = Config({
-      releaseInfoFile: './test/fixtures/redhat-release'
+      platformApis: {
+        centos: C
+      }
     });
 
     Lab.expect(config.platform).to.eql('centos');
@@ -68,6 +82,4 @@ Lab.experiment('config', function() {
     Lab.expect(config.releaseInfoFile).to.eql('/foo/bar/release');
     done();
   });
-
-
 });
