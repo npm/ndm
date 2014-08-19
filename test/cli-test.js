@@ -6,6 +6,25 @@ var Lab = require('lab'),
   _ = require('lodash');
 
 Lab.experiment('cli', function() {
+  Lab.experiment('updateConfigWithNpmconf', function() {
+    Lab.it('should update modulePrefix with the npm install prefix', function(done) {
+      var cli = Cli();
+
+      var npmconf = {
+        get: function(prop) {
+          if (prop==='prefix') return './test/fixtures';
+        }
+      }
+
+      cli.updateConfigWithNpmconf(npmconf);
+      var config = require('../lib/config')();
+      var expectedPrefix = path.resolve('./test/fixtures/lib');
+      Lab.expect(config.modulePrefix).to.eql(expectedPrefix);
+
+      done();
+    })
+  });
+
   Lab.experiment('generateArgs', function() {
     Lab.it('should generate options from config class', function(done) {
       var cli = Cli();
