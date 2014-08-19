@@ -1,7 +1,6 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
 var Lab = require('lab'),
-  path = require('path'),
   Cli = require('../lib/cli'),
   _ = require('lodash');
 
@@ -18,8 +17,7 @@ Lab.experiment('cli', function() {
 
       cli.updateConfigWithNpmconf(npmconf);
       var config = require('../lib/config')();
-      var expectedPrefix = path.resolve('./test/fixtures/lib');
-      Lab.expect(config.modulePrefix).to.eql(expectedPrefix);
+      Lab.expect(config.modulePrefix).to.eql('./test/fixtures');
 
       done();
     })
