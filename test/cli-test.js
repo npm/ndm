@@ -5,6 +5,24 @@ var Lab = require('lab'),
   _ = require('lodash');
 
 Lab.experiment('cli', function() {
+  Lab.experiment('updateConfigWithArgs', function() {
+    Lab.it("parses argument if there's a parser associated with the key", function(done) {
+      var cli = Cli();
+
+      cli.updateConfigWithArgs({
+        sudo: 'false',
+        globalPackage: true
+      });
+
+      var config = require('../lib/config')();
+
+      Lab.expect(config.sudo).to.eql(false);
+      Lab.expect(config.globalPackage).to.eql(true);
+
+      done();
+    });
+  });
+
   Lab.experiment('updateConfigWithNpmconf', function() {
     Lab.it('should update modulePrefix with the npm install prefix', function(done) {
       var cli = Cli();

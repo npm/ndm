@@ -19,7 +19,7 @@ Lab.experiment('config', function() {
     Lab.expect(config.baseWorkingDirectory).to.eql('/banana');
     done();
   });
-
+  
   Lab.it('should allow defaults to be overridden by environment variables', function(done) {
     var config = Config({
       env: {NDM_BASE_WORKING_DIRECTORY: '/foo'}
