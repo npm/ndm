@@ -1,10 +1,12 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab       = exports.lab = lab.script(),
+  expect    = lab.expect,
   Interview = require('../lib/interview'),
   Installer = require('../lib/installer'),
-  rimraf = require('rimraf'),
-  fs = require('fs');
+  rimraf    = require('rimraf'),
+  fs        = require('fs');
 
 Lab.experiment('interview', function() {
 
@@ -14,7 +16,7 @@ Lab.experiment('interview', function() {
 
       interview._generateQuestions();
 
-      Lab.expect(
+      expect(
         interview.questionLookup['--frontdoor-url'].message
       ).to.eql('url of front facing server');
 
@@ -26,7 +28,7 @@ Lab.experiment('interview', function() {
 
       interview._generateQuestions();
 
-      Lab.expect(
+      expect(
         interview.questionLookup['ENVIRONMENT'].message
       ).to.eql('what environment should we run the app in');
 
@@ -39,7 +41,7 @@ Lab.experiment('interview', function() {
       interview._generateQuestions();
 
       // we handle two keys colliding by using a longer unique key.
-      Lab.expect(
+      expect(
         interview.questionLookup['--dog'].message
       ).to.eql('what do you think of dogs?');
 
@@ -52,7 +54,7 @@ Lab.experiment('interview', function() {
       interview._generateQuestions();
 
       // we handle two keys colliding by using a longer unique key.
-      Lab.expect(
+      expect(
         interview.questionLookup['HOST'].message
       ).to.eql('what host should I bind to?');
 
@@ -65,7 +67,7 @@ Lab.experiment('interview', function() {
       interview._generateQuestions();
 
       // we handle two keys colliding by using a longer unique key.
-      Lab.expect(
+      expect(
         interview.questionLookup['ndm-test:args:--frontdoor-url'].message
       ).to.eql('pork chop sandwiches');
 
@@ -115,7 +117,7 @@ Lab.experiment('interview', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');
+      expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');
 
       done();
     });
@@ -125,7 +127,7 @@ Lab.experiment('interview', function() {
       var interview = new Interview({
         logger: {
           error: function(msg) {
-            Lab.expect(msg).to.eql('aborted writing service.json');
+            expect(msg).to.eql('aborted writing service.json');
             done();
           }
         },
@@ -177,7 +179,7 @@ Lab.experiment('interview', function() {
         fs.readFileSync('/tmp/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');
+      expect(serviceJson['ndm-test'].args['--host']).to.eql('2.2.2.2');
 
       done();
     });

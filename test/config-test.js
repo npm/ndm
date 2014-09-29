@@ -1,14 +1,16 @@
 var _ = require('lodash'),
-  Lab = require('lab'),
-  path = require('path'),
+  lab    = require('lab'),
+  Lab    = exports.lab = lab.script(),
+  expect = lab.expect,
+  path   = require('path'),
   Centos = require('../lib/platform-apis/centos'),
   Config = require('../lib/config'),
-  util = require('util');
+  util   = require('util');
 
 Lab.experiment('config', function() {
   Lab.it('should be initialized with sane defaults', function(done) {
     var config = Config();
-    Lab.expect(config.baseWorkingDirectory).to.match(/ndm/);
+    expect(config.baseWorkingDirectory).to.match(/ndm/);
     done();
   });
 
@@ -16,15 +18,15 @@ Lab.experiment('config', function() {
     var config = Config({
       baseWorkingDirectory: '/banana'
     });
-    Lab.expect(config.baseWorkingDirectory).to.eql('/banana');
+    expect(config.baseWorkingDirectory).to.eql('/banana');
     done();
   });
-  
+
   Lab.it('should allow defaults to be overridden by environment variables', function(done) {
     var config = Config({
       env: {NDM_BASE_WORKING_DIRECTORY: '/foo'}
     });
-    Lab.expect(config.baseWorkingDirectory).to.eql('/foo');
+    expect(config.baseWorkingDirectory).to.eql('/foo');
     done();
   });
 
@@ -32,7 +34,7 @@ Lab.experiment('config', function() {
     var config = Config({
       platform: 'darwin'
     });
-    Lab.expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
+    expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
     done();
   });
 
@@ -41,7 +43,7 @@ Lab.experiment('config', function() {
       platform: 'darwin',
       daemonsDirectory: '/foo'
     });
-    Lab.expect(config.daemonsDirectory).to.eql('/foo');
+    expect(config.daemonsDirectory).to.eql('/foo');
     done();
   });
 
@@ -52,7 +54,7 @@ Lab.experiment('config', function() {
 
     var config = (require('../lib/config'))();
 
-    Lab.expect(config.platform).to.eql('banana');
+    expect(config.platform).to.eql('banana');
     done();
   });
 
@@ -73,13 +75,13 @@ Lab.experiment('config', function() {
       }
     });
 
-    Lab.expect(config.platform).to.eql('centos');
+    expect(config.platform).to.eql('centos');
     done();
   });
 
   Lab.it('should read .ndmrc, and allow default settings to be overridden', function(done) {
     var config = Config();
-    Lab.expect(config.releaseInfoFile).to.eql('/foo/bar/release');
+    expect(config.releaseInfoFile).to.eql('/foo/bar/release');
     done();
   });
 });

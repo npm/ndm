@@ -1,6 +1,8 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab = exports.lab = lab.script(),
+  expect = lab.expect,
   Cli = require('../lib/cli'),
   _ = require('lodash');
 
@@ -16,8 +18,8 @@ Lab.experiment('cli', function() {
 
       var config = require('../lib/config')();
 
-      Lab.expect(config.sudo).to.eql(false);
-      Lab.expect(config.globalPackage).to.eql(true);
+      expect(config.sudo).to.eql(false);
+      expect(config.globalPackage).to.eql(true);
 
       done();
     });
@@ -35,7 +37,7 @@ Lab.experiment('cli', function() {
 
       cli.updateConfigWithNpmconf(npmconf);
       var config = require('../lib/config')();
-      Lab.expect(config.modulePrefix).to.eql('./test/fixtures');
+      expect(config.modulePrefix).to.eql('./test/fixtures');
 
       done();
     })
@@ -50,13 +52,13 @@ Lab.experiment('cli', function() {
       var help = cli.yargs.help();
 
       // generations option.
-      Lab.expect(help).to.match(/-u/);
+      expect(help).to.match(/-u/);
       // generates alias.
-      Lab.expect(help).to.match(/-sudo/);
+      expect(help).to.match(/-sudo/);
       // generates description.
-      Lab.expect(help).to.match(/where does the node executable reside/)
+      expect(help).to.match(/where does the node executable reside/)
       // generates defaults.
-      Lab.expect(help).to.match(/default: .*service\.json/);
+      expect(help).to.match(/default: .*service\.json/);
 
       done();
     });
@@ -68,7 +70,7 @@ Lab.experiment('cli', function() {
 
       var help = cli.yargs.help();
 
-      Lab.expect(help).to.match(/ndm generate/);
+      expect(help).to.match(/ndm generate/);
 
       done();
     });
@@ -80,7 +82,7 @@ Lab.experiment('cli', function() {
         yargs: require('yargs')([]),
         logger: {
           log: function(str) {
-            Lab.expect(str).to.match(/Usage:/);
+            expect(str).to.match(/Usage:/);
             done();
           }
         }
@@ -94,7 +96,7 @@ Lab.experiment('cli', function() {
         yargs: require('yargs')(['generate', '--help']),
         logger: {
           log: function(str) {
-            Lab.expect(str).to.match(/Usage:/);
+            expect(str).to.match(/Usage:/);
             done();
           }
         }
@@ -109,7 +111,7 @@ Lab.experiment('cli', function() {
         logger: {
           error: function(str) {},
           log: function(str) {
-            Lab.expect(str).to.match(/Usage:/);
+            expect(str).to.match(/Usage:/);
             done();
           }
         }
@@ -125,7 +127,7 @@ Lab.experiment('cli', function() {
       var cli = Cli({
         yargs: require('yargs')(['generate']),
         generate: function(serviceName) {
-          Lab.expect(serviceName).to.be.undefined;
+          expect(serviceName).to.be.undefined;
           done();
         }
       });
@@ -137,7 +139,7 @@ Lab.experiment('cli', function() {
       var cli = Cli({
         yargs: require('yargs')(['start', 'foobar']),
         start: function(serviceName) {
-          Lab.expect(serviceName).to.eql('foobar');
+          expect(serviceName).to.eql('foobar');
           done();
         }
       });
@@ -153,13 +155,13 @@ Lab.experiment('cli', function() {
         {
           name: 'service1',
           runCommand: function(command) {
-            Lab.expect(command).to.eql('start');
+            expect(command).to.eql('start');
           }
         },
         {
           name: 'service2',
           runCommand: function(command) {
-            Lab.expect(command).to.eql('start');
+            expect(command).to.eql('start');
             done();
           }
         }
@@ -186,7 +188,7 @@ Lab.experiment('cli', function() {
         {
           name: 'service2',
           runCommand: function(command) {
-            Lab.expect(command).to.eql('start');
+            expect(command).to.eql('start');
             done();
           }
         }
@@ -212,14 +214,14 @@ Lab.experiment('cli', function() {
           name: 'service1',
           hasScript: function() { return true; },
           runScript: function(command) {
-            Lab.expect(command).to.eql('foo-script');
+            expect(command).to.eql('foo-script');
           }
         },
         {
           name: 'service2',
           hasScript: function() { return true; },
           runScript: function(command) {
-            Lab.expect(command).to.eql('foo-script');
+            expect(command).to.eql('foo-script');
             done();
           }
         }
@@ -252,7 +254,7 @@ Lab.experiment('cli', function() {
           name: 'service2',
           hasScript: function() { return true; },
           runScript: function(command) {
-            Lab.expect(command).to.eql('foo-script');
+            expect(command).to.eql('foo-script');
             done();
           }
         }
@@ -275,7 +277,7 @@ Lab.experiment('cli', function() {
     Lab.it('runs an interview with a temporary service.json path', function(done) {
       // A mock Interview object.
       var FakeInterview = function(opts) {
-        Lab.expect(opts.tmpServiceJsonPath).to.match(/.*\.json/)
+        expect(opts.tmpServiceJsonPath).to.match(/.*\.json/)
         done();
       };
       FakeInterview.prototype.run = function() {};
@@ -325,7 +327,7 @@ Lab.experiment('cli', function() {
       var cli = Cli({
         rimraf: {
           sync: function(path) {
-            Lab.expect(path).to.eql(serviceJsonPath);
+            expect(path).to.eql(serviceJsonPath);
             done();
           }
         },

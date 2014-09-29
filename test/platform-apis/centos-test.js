@@ -1,7 +1,9 @@
 require('../../lib/config')({headless: true}); // turn off output in tests.
 
 var Centos = require('../../lib/platform-apis/centos'),
-  Lab = require('lab');
+  lab = require('lab'),
+  expect = lab.expect,
+  Lab = exports.lab = lab.script();
 
 Lab.experiment('centos', function() {
   Lab.experiment('isPlatform', function() {
@@ -9,7 +11,7 @@ Lab.experiment('centos', function() {
       var centos = new Centos({
         releaseInfoFile: './test/fixtures/redhat-release'
       });
-      Lab.expect(centos.isPlatform()).to.eql(true);
+      expect(centos.isPlatform()).to.eql(true);
       done();
     });
   });
