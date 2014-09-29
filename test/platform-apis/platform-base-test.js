@@ -1,7 +1,9 @@
 require('../../lib/config')({headless: true}); // turn off output in tests.
 
 var PlatformBase = require('../../lib/platform-apis/platform-base').PlatformBase,
-  Lab = require('lab');
+  lab = require('lab'),
+  expect = lab.expect,
+  Lab = exports.lab = lab.script();
 
 Lab.experiment('platform-base', function() {
   Lab.experiment('restart', function() {
@@ -10,7 +12,7 @@ Lab.experiment('platform-base', function() {
       var platform = new PlatformBase({
         logger: {
           error: function(msg) {
-            Lab.expect(msg).to.eql('must implement stop()');
+            expect(msg).to.eql('must implement stop()');
             done();
           }
         }
@@ -27,7 +29,7 @@ Lab.experiment('platform-base', function() {
       });
 
       platform.restart('fake-service', function(err) {
-        Lab.expect(err.message).to.eql('must implement start()');
+        expect(err.message).to.eql('must implement start()');
         done();
       });
     });

@@ -1,9 +1,11 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab       = exports.lab = lab.script(),
+  expect    = lab.expect,
   Installer = require('../lib/installer'),
-  fs = require('fs'),
-  rimraf = require('rimraf');
+  fs        = require('fs'),
+  rimraf    = require('rimraf');
 
 Lab.experiment('installer', function() {
 
@@ -24,7 +26,7 @@ Lab.experiment('installer', function() {
     Lab.it('should raise an exception if service.json already exists', function(done) {
       var installer = new Installer();
 
-      Lab.expect(function() {
+      expect(function() {
         installer.init();
       }).to.throw(Error, /service\.json already exists/);
 
@@ -38,7 +40,7 @@ Lab.experiment('installer', function() {
       });
 
       installer.init();
-      Lab.expect(fs.existsSync('./test/fixtures/logs')).to.eql(true);
+      expect(fs.existsSync('./test/fixtures/logs')).to.eql(true);
 
       done();
     });
@@ -55,10 +57,10 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
-      Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
-      Lab.expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
-      Lab.expect(serviceJson['ndm-test'].args['--host']).to.eql({
+      expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
+      expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
+      expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
+      expect(serviceJson['ndm-test'].args['--host']).to.eql({
         default: '0.0.0.0',
         description: 'what host should we bind to?'
       });
@@ -72,7 +74,7 @@ Lab.experiment('installer', function() {
         serviceJsonPath: './test/fixtures/service.json'
       });
 
-      Lab.expect(function() {
+      expect(function() {
         installer.init();
       }).to.throw(Error, /package\.json did not exist/);
       done();
@@ -90,7 +92,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
+      expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
       done();
     });
 
@@ -106,7 +108,7 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['ndm-test'].scripts.thumbd).to.eql('./test3.js');
+      expect(serviceJson['ndm-test'].scripts.thumbd).to.eql('./test3.js');
       done();
     });
 
@@ -122,8 +124,8 @@ Lab.experiment('installer', function() {
         fs.readFileSync('./test/fixtures/service.json').toString()
       );
 
-      Lab.expect(serviceJson['@npm/ndm-test2']).to.be.undefined;
-      Lab.expect(serviceJson['ndm-test2'].module).to.eql('@npm/ndm-test2');
+      expect(serviceJson['@npm/ndm-test2']).to.be.undefined;
+      expect(serviceJson['ndm-test2'].module).to.eql('@npm/ndm-test2');
 
       done();
     });
@@ -150,12 +152,12 @@ Lab.experiment('installer', function() {
       );
 
       // should add new service.
-      Lab.expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
-      Lab.expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
-      Lab.expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
+      expect(serviceJson['ndm-test'].description).to.eql('Test program for ndm deployment library.');
+      expect(serviceJson['ndm-test'].env['PORT']).to.eql(5000);
+      expect(serviceJson['ndm-test'].args['--verbose']).to.eql('false');
 
       // should leave old service.
-      Lab.expect(serviceJson['app'].env['foo']).to.eql('bar');
+      expect(serviceJson['app'].env['foo']).to.eql('bar');
 
       done();
     });
@@ -179,7 +181,7 @@ Lab.experiment('installer', function() {
       );
 
       // should not clobber entries that already exist in service.json.
-      Lab.expect(serviceJson['ndm-test'].env['foo']).to.eql('bar');
+      expect(serviceJson['ndm-test'].env['foo']).to.eql('bar');
       done();
     });
   });
