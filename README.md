@@ -100,6 +100,7 @@ Here's an example:
   },
   "ndm-test2": {
     "description": "the awesome service",
+    "processes": 3,
     "module": "be-awesome",
     "scripts": {
       "start": "./bin/foo.js"
@@ -112,7 +113,7 @@ Here's an example:
     }
   },
   "env": {
-    "APP": "my-test-app",
+    "APP": "my-test-app-%i",
     "NODE_ENV": "production"
   },
   "args": {
@@ -126,6 +127,10 @@ Here's an example:
 * **scripts:** scripts that can be executed by ndm. When generating service wrappers the `start` script is used.
 * **env:** string environment variables available within the script executed by the ndm wrapper.
 * **args:** command-line-arguments available to the script executed by the ndm wrapper.
+* **processes:** how many copies of the service should be run.
+  * useful for taking advantage of multiple cpus, defaults to 1 process.
+* **`%i`:** `%i` is a place-holder for the process # if you're running multiple processes.
+  * this can be useful if you want each process to bind to a different port, e.g., `800%i`.
 
 Defaults for all services are in the top-level `env` and `args` fields. Each services can override and extend the defaults in its own options stanza.
 
