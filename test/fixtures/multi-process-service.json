@@ -1,5 +1,5 @@
 {
-  "awesome": {
+  "ndm-test-service": {
     "processes": 3,
     "env": {
       "FOO": "bar",

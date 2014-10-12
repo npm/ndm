@@ -117,9 +117,9 @@ lab.experiment('service', function() {
         });
 
       expect(services.length).to.eql(4);
-      expect(serviceNames).to.include('awesome');
-      expect(serviceNames).to.include('awesome-1');
-      expect(serviceNames).to.include('awesome-2');
+      expect(serviceNames).to.include('ndm-test-service');
+      expect(serviceNames).to.include('ndm-test-service-1');
+      expect(serviceNames).to.include('ndm-test-service-2');
       expect(serviceNames).to.include('dude');
       done();
     });
@@ -143,6 +143,31 @@ lab.experiment('service', function() {
 
       // %i replaced in args object.
       Lab.expect(service3.args['--port']).to.eql('8080');
+
+      return done();
+    });
+  });
+
+  lab.experiment('_copyFieldsFromPackageJson', function() {
+    it('copies fields from package.json', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var service = Service.allServices()[0];
+
+      expect(service.description).to.eql('testing a service deployment using ndm.');
+      expect(service.scripts.start).to.eql('node ./test.js');
+
+      return done();
+    });
+
+    it('does not copy fields if module name and package.json name do not match', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var service = Service.allServices()[3];
+
+      expect(service.description).to.eql('');
 
       return done();
     });
