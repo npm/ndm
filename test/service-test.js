@@ -130,7 +130,7 @@ lab.experiment('service', function() {
       });
       var services = Service.allServices(),
         service1 = services[0], // the multiple awesome services.
-        service2 = services[1];
+        service2 = services[1],
         service3 = services[3]; // the dude service.
 
       // %i replaced in env object.
