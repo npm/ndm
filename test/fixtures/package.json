@@ -4,6 +4,9 @@
   "description": "testing a service deployment using ndm.",
   "author": "Ben Coe <ben@npmjs.com>",
   "license": "ISC",
+  "scripts": {
+    "start": "node ./test.js"
+  },
   "dependencies": {
     "ndm-test": "0.0.16",
     "@npm/ndm-test2": "0.0.16"

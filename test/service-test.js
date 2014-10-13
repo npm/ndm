@@ -1,6 +1,7 @@
 require('../lib/config')({headless: true}); // turn off output in tests.
 
-var Lab = require('lab'),
+var _      = require('lodash'),
+  Lab      = require('lab'),
   lab      = exports.lab = Lab.script(),
   describe = lab.describe,
   it       = lab.it,
@@ -102,6 +103,73 @@ lab.experiment('service', function() {
         expect(service.args.indexOf("--apple")).to.not.eql(-1);
         done();
       });
+    });
+  });
+
+  lab.experiment('multiple processes', function() {
+    it('creates multiple services when processes value is set', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var services = Service.allServices(),
+        serviceNames = _.map(services, function(service) {
+          return service.name;
+        });
+
+      expect(services.length).to.eql(4);
+      expect(serviceNames).to.include('ndm-test-service');
+      expect(serviceNames).to.include('ndm-test-service-1');
+      expect(serviceNames).to.include('ndm-test-service-2');
+      expect(serviceNames).to.include('dude');
+      done();
+    });
+
+    it('replaces %i with process count in env and args', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var services = Service.allServices(),
+        service1 = services[0], // the multiple awesome services.
+        service2 = services[1],
+        service3 = services[3]; // the dude service.
+
+      // %i replaced in env object.
+      Lab.expect(service1.env.PORT).to.eql('5000');
+      Lab.expect(service2.env.PORT).to.eql('5001');
+
+      // %i replaced in args array.
+      Lab.expect(service1.args).to.include('0');
+      Lab.expect(service2.args).to.include('1');
+
+      // %i replaced in args object.
+      Lab.expect(service3.args['--port']).to.eql('8080');
+
+      return done();
+    });
+  });
+
+  lab.experiment('_copyFieldsFromPackageJson', function() {
+    it('copies fields from package.json', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var service = Service.allServices()[0];
+
+      expect(service.description).to.eql('testing a service deployment using ndm.');
+      expect(service.scripts.start).to.eql('node ./test.js');
+
+      return done();
+    });
+
+    it('does not copy fields if module name and package.json name do not match', function(done) {
+      Config({
+        serviceJsonPath: './test/fixtures/multi-process-service.json'
+      });
+      var service = Service.allServices()[3];
+
+      expect(service.description).to.eql('');
+
+      return done();
     });
   });
 

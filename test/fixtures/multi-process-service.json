@@ -1,0 +1,16 @@
+{
+  "ndm-test-service": {
+    "processes": 3,
+    "env": {
+      "FOO": "bar",
+      "PORT": "500%i"
+    },
+    "args": ["--process", "%i"]
+  },
+  "dude": {
+    "processes": 1,
+    "args": {
+      "--port": "808%i"
+    }
+  }
+}
