@@ -64,7 +64,7 @@ A node-packaged service built for ndm can provide some hints in its package.json
   "script": {
     "start": "node ./bin/awesome.js"
   },
-  "environment": {
+  "service": {
     "args": {
       "--verbose": "false"
     },
