@@ -33,7 +33,7 @@ Lab.experiment('config', function() {
   Lab.it('should set OS specific environment variables', function(done) {
     var config = Config({
       platform: 'darwin'
-    });
+    }, true);
     expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
     done();
   });

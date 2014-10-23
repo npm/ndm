@@ -293,7 +293,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'darwin',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0];
 
@@ -319,7 +319,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'centos',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0]
 
@@ -372,7 +372,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'linux',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0]
 
