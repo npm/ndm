@@ -1,0 +1,11 @@
+{
+  "@npminc/partners": {
+    "scripts": {
+     "start": "node index.js"
+    },
+    "processes": 4,
+    "env": {
+      "PORT": "808%i"
+    }
+  }
+}
