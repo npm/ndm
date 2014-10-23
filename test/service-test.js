@@ -801,4 +801,32 @@ lab.experiment('service', function() {
 
   });
 
+  lab.experiment('scopedModules', function() {
+    it('escapes init-script path appropriately', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        serviceJsonPath: './test/fixtures/scoped-service.json'
+      });
+
+      var service = Service.allServices()[0];
+
+      Lab.expect(service.scriptPath()).to.match(/@npminc_partners.plist/);
+      return done();
+    });
+
+    it('escapes log path appropriately', function(done) {
+      Config({
+        platform: 'linux',
+        daemonsDirectory: './',
+        serviceJsonPath: './test/fixtures/scoped-service.json'
+      });
+
+      var service = Service.allServices()[0];
+
+      Lab.expect(service.logFile).to.match(/@npminc_partners.log/);
+      return done();
+    });
+  });
+
 });
