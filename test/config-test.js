@@ -25,7 +25,7 @@ Lab.experiment('config', function() {
   Lab.it('should allow defaults to be overridden by environment variables', function(done) {
     var config = Config({
       env: {NDM_BASE_WORKING_DIRECTORY: '/foo'}
-    });
+    }, true);
     expect(config.baseWorkingDirectory).to.eql('/foo');
     done();
   });
@@ -33,7 +33,7 @@ Lab.experiment('config', function() {
   Lab.it('should set OS specific environment variables', function(done) {
     var config = Config({
       platform: 'darwin'
-    });
+    }, true);
     expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
     done();
   });
@@ -73,7 +73,7 @@ Lab.experiment('config', function() {
       platformApis: {
         centos: C
       }
-    });
+    }, true);
 
     expect(config.platform).to.eql('centos');
     done();

@@ -13,6 +13,11 @@ var _      = require('lodash'),
 
 lab.experiment('service', function() {
 
+  lab.beforeEach(function(done) {
+    Config({}, true); // reset the configuration.
+    return done();
+  });
+
   lab.experiment('allServices', function() {
     it('returns all services if no filter is provided', function(done) {
       expect(Service.allServices().length).to.eql(3);
@@ -288,7 +293,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'darwin',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0];
 
@@ -314,7 +319,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'centos',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0]
 
@@ -367,7 +372,7 @@ lab.experiment('service', function() {
         Config({
           platform: 'linux',
           daemonsDirectory: './'
-        });
+        }, true);
 
         var service = Service.allServices()[0]
 
