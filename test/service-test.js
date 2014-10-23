@@ -811,7 +811,7 @@ lab.experiment('service', function() {
 
       var service = Service.allServices()[0];
 
-      Lab.expect(service.scriptPath()).to.match(/@npminc_partners.plist/);
+      Lab.expect(service.scriptPath()).to.match(/@npminc_partners/);
       return done();
     });
 
@@ -824,7 +824,7 @@ lab.experiment('service', function() {
 
       var service = Service.allServices()[0];
 
-      Lab.expect(service.logFile).to.match(/@npminc_partners.log/);
+      Lab.expect(service.logFile).to.match(/@npminc_partners/);
       return done();
     });
   });
