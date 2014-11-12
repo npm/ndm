@@ -392,6 +392,32 @@ lab.experiment('service', function() {
 
     });
 
+    lab.experiment('initd', function() {
+
+      it('should genterate a script with the appropriate variables populated', function(done) {
+        Config({
+          platform: 'initd',
+          daemonsDirectory: './'
+        }, true);
+
+        var service = Service.allServices()[0]
+
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          sharedAssertions(script);
+
+          // it should populate the bin for the script.
+          expect(script).to.match(/bin\/node \.\/test.js/);
+
+          done();
+        });
+      });
+
+    });
+
     it('should raise an appropriate exception if JSON is invalid', function(done) {
       Config({
         platform: 'linux',
