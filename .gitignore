@@ -3,3 +3,4 @@ node_modules
 logs/
 ndm-test.plist
 ndm-test.conf
+ndm-test
