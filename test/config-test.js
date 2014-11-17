@@ -34,6 +34,7 @@ Lab.experiment('config', function() {
     var config = Config({
       platform: 'darwin'
     }, true);
+    config.updateWithOSDefaults();
     expect(config.daemonsDirectory).to.eql('~/Library/LaunchAgents/');
     done();
   });

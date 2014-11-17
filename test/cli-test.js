@@ -27,7 +27,10 @@ Lab.experiment('cli', function() {
 
   Lab.experiment('updateConfigWithNpmconf', function() {
     Lab.it('should update modulePrefix with the npm install prefix', function(done) {
-      var cli = Cli();
+      var cli = Cli(),
+        config = require('../lib/config')({
+          modulePrefix: null
+        });
 
       var npmconf = {
         get: function(prop) {
@@ -36,7 +39,6 @@ Lab.experiment('cli', function() {
       }
 
       cli.updateConfigWithNpmconf(npmconf);
-      var config = require('../lib/config')();
       expect(config.modulePrefix).to.eql('./test/fixtures');
 
       done();
