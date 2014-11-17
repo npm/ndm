@@ -740,6 +740,45 @@ lab.experiment('service', function() {
       done();
     });
 
+    it('returns package.json path if no service.json found', function(done) {
+      var config = Config({
+          headless: true,
+          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+        });
+
+      expect(Service._serviceJsonPath()).to.eql(
+        path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
+      );
+
+      done();
+    });
+
+    it('does not return package.json path, if it does not match serviceNameFilter', function(done) {
+      var config = Config({
+          headless: true,
+          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+        });
+
+      expect(Service._serviceJsonPath('banana')).to.eql(
+        path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+      );
+
+      done();
+    });
+
+    it('returns package.json path, if name in package.json matches serviceNameFilter', function(done) {
+      var config = Config({
+          headless: true,
+          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+        });
+
+      expect(Service._serviceJsonPath('@npm/ndm-test')).to.eql(
+        path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
+      );
+
+      done();
+    });
+
     it('finds service in ./node_modules if no service.json found elsewhere', function(done) {
       var config = Config({
         headless: true,
