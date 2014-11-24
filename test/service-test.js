@@ -285,6 +285,9 @@ lab.experiment('service', function() {
       // global ags variables populated.
       expect(script).to.match(/--batman/);
       expect(script).to.match(/greatest-detective/);
+
+      // does not escape special characters such as "'".
+      expect(script).to.match(/'awesome'/);
     }
 
     lab.experiment('darwin', function() {

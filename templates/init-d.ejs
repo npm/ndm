@@ -12,14 +12,14 @@
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
 
-dir="<%= workingDirectory %>"
-user="<%= uid %>"
-cmd="<% Object.keys(env).forEach(function(key) {%><%= key %>=<%= env[key] %> <% }); %><%= nodeBin %> <%= startScript %><% flatArgs.forEach(function(arg) { %> <%= arg %><% }); %>"
+dir="<%- workingDirectory %>"
+user="<%- uid %>"
+cmd="<% Object.keys(env).forEach(function(key) {%><%- key %>=<%- env[key] %> <% }); %><%- nodeBin %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"
-stdout_log="<%= logFile %>"
-stderr_log="<%= logFile %>"
+stdout_log="<%- logFile %>"
+stderr_log="<%- logFile %>"
 
 get_pid() {
     cat "$pid_file"

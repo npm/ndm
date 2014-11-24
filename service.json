@@ -65,6 +65,7 @@
       "default": "http://127.0.0.1:8080",
       "description": "url of front facing server"
     },
-    "--dog": "#bada55"
+    "--dog": "#bada55",
+    "--quoted": "'awesome'"
   }
 }
