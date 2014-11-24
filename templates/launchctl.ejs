@@ -5,27 +5,27 @@
     <key>KeepAlive</key>
     <true/>
     <key>Label</key>
-    <string><%= name %></string>
+    <string><%- name %></string>
     <key>ProgramArguments</key>
     <array>
-      <string><%= nodeBin %></string>
-      <string><%= startScript %></string><% flatArgs.forEach(function(arg) { %>
-      <string><%= arg %></string><% }); %>
+      <string><%- nodeBin %></string>
+      <string><%- startScript %></string><% flatArgs.forEach(function(arg) { %>
+      <string><%- arg %></string><% }); %>
     </array>
     <key>EnvironmentVariables</key>
     <dict><% Object.keys(env).forEach(function(key) { %>
-      <key><%= key %></key>
-      <string><%= env[key] %></string><% }); %>
+      <key><%- key %></key>
+      <string><%- env[key] %></string><% }); %>
     </dict>
     <key>EnableTransactions</key>
     <true/>
     <key>RunAtLoad</key>
     <true/>
     <key>WorkingDirectory</key>
-    <string><%= workingDirectory %></string>
+    <string><%- workingDirectory %></string>
     <key>StandardErrorPath</key>
-    <string><%= logFile %></string>
+    <string><%- logFile %></string>
     <key>StandardOutPath</key>
-    <string><%= logFile %></string>
+    <string><%- logFile %></string>
   </dict>
 </plist>
