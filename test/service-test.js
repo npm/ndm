@@ -316,6 +316,31 @@ lab.experiment('service', function() {
       });
     });
 
+    lab.experiment('darwin', function() {
+      it('should genterate valid xml', function(done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'darwin',
+          daemonsDirectory: './',
+          serviceJsonPath: './test/fixtures/bad-xml-service.json'
+        }, true);
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          // the number of starting and closing tags should be the same
+          expect(script.match(/<string>/g).length).to.equal(script.match(/<\/string>/g).length)
+
+          done();
+        });
+
+      });
+    });
+
     lab.experiment('centos', function() {
 
       it('should generate a script with the appropriate variables populated', function(done) {

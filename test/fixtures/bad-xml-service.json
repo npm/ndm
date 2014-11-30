@@ -1,0 +1,26 @@
+{
+  "ndm-test": {
+    "scripts": {
+      "start": "./test.js"
+    },
+    "module": "ndm-test",
+    "env": {
+      "PORT": "8000</string>",
+      "HOST": {
+        "default": "localhost",
+        "description": "what host should I bind to?"
+      }
+    },
+    "args": [
+      "--apple",
+      "banana",
+      "--spider-man",
+      "sad",
+      "awesome"
+    ]
+  },
+  "args": [
+    "a",
+    "b"
+  ]
+}
