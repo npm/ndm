@@ -344,6 +344,23 @@ lab.experiment('service', function() {
 
       });
 
+      it('should quote values so that strings witih spaces do not cause problems', function(done) {
+        Config({
+          platform: 'centos',
+          daemonsDirectory: './'
+        }, true);
+
+        var service = Service.allServices()[0]
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          Lab.expect(script).to.match(/ENVIRONMENT="test"/);
+
+          return done();
+        });
+      });
+
       it('should switch su to uid user, if uid is provided', function(done) {
         Config({
           platform: 'centos',
@@ -393,6 +410,23 @@ lab.experiment('service', function() {
         });
       });
 
+      it('should quote values so that strings witih spaces do not cause problems', function(done) {
+        Config({
+          platform: 'linux',
+          daemonsDirectory: './'
+        }, true);
+
+        var service = Service.allServices()[0]
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          Lab.expect(script).to.match(/ENVIRONMENT="test"/);
+
+          return done();
+        });
+      });
+
     });
 
     lab.experiment('initd', function() {
@@ -416,6 +450,23 @@ lab.experiment('service', function() {
           expect(script).to.match(/bin\/node \.\/test.js/);
 
           done();
+        });
+      });
+
+      it('should quote values so that strings witih spaces do not cause problems', function(done) {
+        Config({
+          platform: 'initd',
+          daemonsDirectory: './'
+        }, true);
+
+        var service = Service.allServices()[0]
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          Lab.expect(script).to.match(/ENVIRONMENT="test"/);
+
+          return done();
         });
       });
 
