@@ -337,7 +337,7 @@ lab.experiment('service', function() {
           expect(script).to.not.match(/su -/);
 
           // it should populate the bin for the script.
-          expect(script).to.match(/bin\/node \.\/test.js/)
+          expect(script).to.match(/bin\/node \.\/test.js/);
 
           done();
         });
@@ -387,7 +387,29 @@ lab.experiment('service', function() {
           sharedAssertions(script);
 
           // it should populate the bin for the script.
-          expect(script).to.match(/bin\/node \.\/test.js/)
+          expect(script).to.match(/bin\/node \.\/test.js/);
+          expect(script).to.match(/description ".*"/);
+
+          done();
+        });
+      });
+
+      it ('should not have a description stanza if description is blank', function(done) {
+        Config({
+          platform: 'linux',
+          daemonsDirectory: './'
+        }, true);
+
+        var service = Service.allServices()[0]
+        service.description = "";
+
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          sharedAssertions(script);
+          expect(script).to.not.match(/description ".*"/);
 
           done();
         });
