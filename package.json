@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "bin": "./bin/ndm.js",
   "scripts": {
-    "test": "lab -c -v --timeout 8000 --ignore Intl,Map"
+    "test": "lab -c -v --timeout 8000 --ignore Intl,Map,Set"
   },
   "author": "Ben Coe <ben@npmjs.com>",
   "license": "ISC",
