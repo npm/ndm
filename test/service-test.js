@@ -285,9 +285,6 @@ lab.experiment('service', function() {
       // global ags variables populated.
       expect(script).to.match(/--batman/);
       expect(script).to.match(/greatest-detective/);
-
-      // does not escape special characters such as "'".
-      expect(script).to.match(/'awesome'/);
     }
 
     lab.experiment('darwin', function() {
@@ -364,6 +361,9 @@ lab.experiment('service', function() {
           // it should populate the bin for the script.
           expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
 
+          // does not escape special characters such as "'".
+          expect(script).to.match(/'awesome'/);
+
           done();
         });
 
@@ -414,6 +414,9 @@ lab.experiment('service', function() {
           // it should populate the bin for the script.
           expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
           expect(script).to.match(/description ".*"/);
+
+          // does not escape special characters such as "'".
+          expect(script).to.match(/'awesome'/);
 
           done();
         });
