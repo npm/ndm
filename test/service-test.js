@@ -285,9 +285,6 @@ lab.experiment('service', function() {
       // global ags variables populated.
       expect(script).to.match(/--batman/);
       expect(script).to.match(/greatest-detective/);
-
-      // does not escape special characters such as "'".
-      expect(script).to.match(/'awesome'/);
     }
 
     lab.experiment('darwin', function() {
@@ -309,6 +306,31 @@ lab.experiment('service', function() {
 
           // it should populate the bin for the script.
           expect(script).to.match(/>.\/test.js/)
+
+          done();
+        });
+
+      });
+
+      it('should genterate valid xml', function(done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'darwin',
+          daemonsDirectory: './',
+          serviceJsonPath: './test/fixtures/bad-xml-service.json'
+        }, true);
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          // inspect the generated script, and make sure we've
+          // populated the appropriate stanzas.
+          var script = fs.readFileSync(service.scriptPath()).toString();
+
+          // the number of starting and closing tags should be the same
+          expect(script.match(/<string>/g).length).to.equal(script.match(/<\/string>/g).length)
+          // should have escaped < character.
+          expect(script).to.match(/&lt;/);
 
           done();
         });
@@ -338,6 +360,9 @@ lab.experiment('service', function() {
 
           // it should populate the bin for the script.
           expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
+
+          // does not escape special characters such as "'".
+          expect(script).to.match(/'awesome'/);
 
           done();
         });
@@ -389,6 +414,9 @@ lab.experiment('service', function() {
           // it should populate the bin for the script.
           expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
           expect(script).to.match(/description ".*"/);
+
+          // does not escape special characters such as "'".
+          expect(script).to.match(/'awesome'/);
 
           done();
         });

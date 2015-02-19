@@ -5,17 +5,17 @@
     <key>KeepAlive</key>
     <true/>
     <key>Label</key>
-    <string><%- name %></string>
+    <string><%- xmlescape(name) %></string>
     <key>ProgramArguments</key>
     <array>
       <string><%- nodeBin %></string>
       <string><%- startScript %></string><% flatArgs.forEach(function(arg) { %>
-      <string><%- arg %></string><% }); %>
+      <string><%- xmlescape(arg) %></string><% }); %>
     </array>
     <key>EnvironmentVariables</key>
     <dict><% Object.keys(env).forEach(function(key) { %>
-      <key><%- key %></key>
-      <string><%- env[key] %></string><% }); %>
+      <key><%- xmlescape(key) %></key>
+      <string><%- xmlescape(env[key]) %></string><% }); %>
     </dict>
     <key>EnableTransactions</key>
     <true/>
