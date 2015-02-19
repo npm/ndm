@@ -291,7 +291,7 @@ lab.experiment('service', function() {
     }
 
     lab.experiment('darwin', function() {
-      it('should genterate a script with the appropriate variables populated', function(done) {
+      it('should generate a script with the appropriate variables populated', function(done) {
         // test generating a script for darwin.
         Config({
           platform: 'darwin',
@@ -318,7 +318,7 @@ lab.experiment('service', function() {
 
     lab.experiment('centos', function() {
 
-      it('should genterate a script with the appropriate variables populated', function(done) {
+      it('should generate a script with the appropriate variables populated', function(done) {
         Config({
           platform: 'centos',
           daemonsDirectory: './'
@@ -337,7 +337,7 @@ lab.experiment('service', function() {
           expect(script).to.not.match(/su -/);
 
           // it should populate the bin for the script.
-          expect(script).to.match(/bin\/node \.\/test.js/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
 
           done();
         });
@@ -371,7 +371,7 @@ lab.experiment('service', function() {
 
     lab.experiment('ubuntu', function() {
 
-      it('should genterate a script with the appropriate variables populated', function(done) {
+      it('should generate a script with the appropriate variables populated', function(done) {
         Config({
           platform: 'linux',
           daemonsDirectory: './'
@@ -387,7 +387,7 @@ lab.experiment('service', function() {
           sharedAssertions(script);
 
           // it should populate the bin for the script.
-          expect(script).to.match(/bin\/node \.\/test.js/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
           expect(script).to.match(/description ".*"/);
 
           done();
@@ -419,7 +419,7 @@ lab.experiment('service', function() {
 
     lab.experiment('initd', function() {
 
-      it('should genterate a script with the appropriate variables populated', function(done) {
+      it('should generate a script with the appropriate variables populated', function(done) {
         Config({
           platform: 'initd',
           daemonsDirectory: './'
@@ -435,7 +435,7 @@ lab.experiment('service', function() {
           sharedAssertions(script);
 
           // it should populate the bin for the script.
-          expect(script).to.match(/bin\/node \.\/test.js/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
 
           done();
         });
