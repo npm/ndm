@@ -314,9 +314,7 @@ lab.experiment('service', function() {
         });
 
       });
-    });
 
-    lab.experiment('darwin', function() {
       it('should genterate valid xml', function(done) {
         // test generating a script for darwin.
         Config({
@@ -334,6 +332,8 @@ lab.experiment('service', function() {
 
           // the number of starting and closing tags should be the same
           expect(script.match(/<string>/g).length).to.equal(script.match(/<\/string>/g).length)
+          // should have escaped < character.
+          expect(script).to.match(/&lt;/);
 
           done();
         });
