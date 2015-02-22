@@ -14,7 +14,11 @@
 
 dir="<%- workingDirectory %>"
 user="<%- uid %>"
-cmd="<% Object.keys(env).forEach(function(key) {%><%- key %>=<%- env[key] %> <% }); %><%- nodeBin %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
+<% Object.keys(env).forEach(function (key) { %>
+<%- key %>=<%- env[key] %>
+export <%- key %>
+<% }) %>
+cmd="<%- nodeBin %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"
