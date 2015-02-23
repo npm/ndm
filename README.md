@@ -220,7 +220,7 @@ Rather than using the ndm bin to manage services, you can use the ndm API to cre
     "env": {
       "PORT": 8000,
       "USER": {
-  "description": "enter a username."
+        "description": "enter a username."
       }
     }
   }
