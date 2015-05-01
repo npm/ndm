@@ -73,6 +73,34 @@ Lab.experiment('interview', function() {
 
       done();
     });
+
+    Lab.describe('default values', function() {
+      Lab.it('should load default values', function(done) {
+        var interview = new Interview();
+
+        interview._generateQuestions();
+
+        // we handle two keys colliding by using a longer unique key.
+        expect(
+          interview.questionLookup['HOST'].default
+        ).to.eql('localhost');
+
+        done();
+      });
+
+      Lab.it('should replace {{uuid}} with a GUID', function(done) {
+        var interview = new Interview();
+
+        interview._generateQuestions();
+
+        // we handle two keys colliding by using a longer unique key.
+        expect(
+          interview.questionLookup['SECRET'].default
+        ).to.match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/);
+
+        done();
+      });
+    });
   });
 
   Lab.experiment('run', function() {
