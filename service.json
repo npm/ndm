@@ -31,6 +31,10 @@
       "HOST": {
         "default": "localhost",
         "description": "what host should I bind to?"
+      },
+      "SECRET": {
+        "default": "{{uuid}}",
+        "description": "a unique value"
       }
     },
     "args": [
