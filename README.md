@@ -268,6 +268,20 @@ ndm-test install
 ndm-test start
 ```
 
+## Setting Node Flags
+
+For each service in your service.json file, you can optionally set the following flags.
+
+* `maxOldSpaceSize`: sets the `--max-old-space-size` flag to to `N` megabytes.
+
+```json
+{
+  "foo": {
+    "maxOldSpaceSize": "4096"
+  }
+}
+```
+
 ## Disclaimer
 
 ndm is an experiment, based on ops challenges we've been facing at npm. This is a dot release. I'll be moving things around a lot in this library, as we use it for our own deployments.

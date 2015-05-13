@@ -336,6 +336,23 @@ lab.experiment('service', function() {
         });
 
       });
+
+      it('should allow --max-old-space-size to be set', function (done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'darwin',
+          daemonsDirectory: './',
+          serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
+        }, true);
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+          expect(script).to.match(/<string>--max-old-space-size=4096<\/string>/)
+          done();
+        });
+      });
     });
 
     lab.experiment('centos', function() {
@@ -392,6 +409,24 @@ lab.experiment('service', function() {
         });
       });
 
+      it('should allow --max-old-space-size to be set', function (done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'centos',
+          daemonsDirectory: './',
+          uid: 'npm',
+          serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
+        });
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+          expect(script).to.match(/ --max-old-space-size=4096 /)
+          done();
+        });
+      });
+
     });
 
     lab.experiment('ubuntu', function() {
@@ -443,6 +478,24 @@ lab.experiment('service', function() {
         });
       });
 
+      it('should allow --max-old-space-size to be set', function (done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'linux',
+          daemonsDirectory: './',
+          uid: 'npm',
+          serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
+        });
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+          expect(script).to.match(/ --max-old-space-size=4096 /)
+          done();
+        });
+      });
+
     });
 
     lab.experiment('initd', function() {
@@ -465,6 +518,24 @@ lab.experiment('service', function() {
           // it should populate the bin for the script.
           expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
 
+          done();
+        });
+      });
+
+      it('should allow --max-old-space-size to be set', function (done) {
+        // test generating a script for darwin.
+        Config({
+          platform: 'initd',
+          daemonsDirectory: './',
+          uid: 'npm',
+          serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
+        });
+
+        var service = Service.allServices()[0];
+
+        service.generateScript(function() {
+          var script = fs.readFileSync(service.scriptPath()).toString();
+          expect(script).to.match(/ --max-old-space-size=4096 /)
           done();
         });
       });
