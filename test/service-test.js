@@ -8,6 +8,7 @@ var _      = require('lodash'),
   expect   = Lab.expect,
   path     = require('path'),
   Config   = require('../lib/config'),
+  rimraf   = require('rimraf'),
   Service  = require('../lib/service'),
   fs       = require('fs');
 
@@ -268,6 +269,12 @@ lab.experiment('service', function() {
   });
 
   lab.experiment('generateScript', function() {
+
+    lab.after(function (done) {
+      // cleanup the junk file created by generate.
+      rimraf.sync('@npminc_partnersundefined')
+      return done()
+    })
 
     function sharedAssertions(script) {
       // local environment variables populated.
