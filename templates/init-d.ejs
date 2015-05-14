@@ -18,7 +18,7 @@ user="<%- uid %>"
 <%- key %>=<%- env[key] %>
 export <%- key %>
 <% }) %>
-cmd="<%- nodeBin %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
+cmd="<%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"

@@ -8,7 +8,8 @@
     <string><%- xmlescape(name) %></string>
     <key>ProgramArguments</key>
     <array>
-      <string><%- nodeBin %></string>
+      <string><%- nodeBin %></string><% nodeFlags.forEach(function(flag) { %>
+      <string><%- xmlescape(flag) %></string><% }); %>
       <string><%- startScript %></string><% flatArgs.forEach(function(arg) { %>
       <string><%- xmlescape(arg) %></string><% }); %>
     </array>
