@@ -26,5 +26,5 @@ limit core unlimited unlimited
 
 script
   cd <%- workingDirectory %>
-  <% Object.keys(env).forEach(function(key) {%><%- key %>=<%- env[key] %> <% }); %><%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %><% if (!console) { %> >> <%- logFile %> 2>&1 <% } %>
+  exec <% Object.keys(env).forEach(function(key) {%><%- key %>=<%- env[key] %> <% }); %><%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %><% if (!console) { %> >> <%- logFile %> 2>&1 <% } %>
 end script
