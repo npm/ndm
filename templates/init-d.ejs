@@ -14,11 +14,7 @@
 
 dir="<%- workingDirectory %>"
 user="<%- uid %>"
-<% Object.keys(env).forEach(function (key) { %>
-<%- key %>=<%- env[key] %>
-export <%- key %>
-<% }) %>
-cmd="<%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
+cmd="<% Object.keys(env).forEach(function (key) { %><%- key %>=<%- env[key] %><% }) %> <%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"
