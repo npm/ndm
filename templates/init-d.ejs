@@ -15,8 +15,7 @@
 dir="<%- workingDirectory %>"
 user="<%- uid %>"
 <% Object.keys(env).forEach(function (key) { %>
-<%- key %>=<%- env[key] %>
-export <%- key %>
+export <%- key %>=<%- env[key] %>
 <% }) %>
 cmd="<%- nodeBin %><% nodeFlags.forEach(function(flag) { %> <%- flag %><% }); %> <%- startScript %><% flatArgs.forEach(function(arg) { %> <%- arg %><% }); %>"
 

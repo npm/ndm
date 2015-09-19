@@ -23,7 +23,7 @@
     "string": "^1.8.1",
     "temp": "^0.8.1",
     "xml-escape": "^1.0.0",
-    "yargs": "^3.9.0"
+    "yargs": "^3.25.0"
   },
   "devDependencies": {
     "lab": "~4.5.1",
