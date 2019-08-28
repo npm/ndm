@@ -227,7 +227,7 @@ Rather than using the ndm bin to manage services, you can use the ndm API to cre
 }
 ```
 
-3. update your package's bin to look something like this (the argument passed to ndm's require is the name of the module in the sevice.json that you'd like to run):
+3. update your package's bin to look something like this (the argument passed to ndm's require is the name of the module in the service.json that you'd like to run):
 
 ```
 #!/usr/bin/env node
