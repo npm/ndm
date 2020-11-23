@@ -1,348 +1,343 @@
-require('../lib/config')({headless: true}); // turn off output in tests.
+require('../lib/config')({ headless: true }) // turn off output in tests.
 
-var _      = require('lodash'),
-  Lab      = require('lab'),
-  lab      = exports.lab = Lab.script(),
-  describe = lab.describe,
-  it       = lab.it,
-  expect   = Lab.expect,
-  path     = require('path'),
-  Config   = require('../lib/config'),
-  rimraf   = require('rimraf'),
-  Service  = require('../lib/service'),
-  fs       = require('fs');
+const _ = require('lodash')
+const Lab = require('lab')
+const lab = exports.lab = Lab.script()
+const describe = lab.describe
+const it = lab.it
+const expect = Lab.expect
+const path = require('path')
+const Config = require('../lib/config')
+const rimraf = require('rimraf')
+const Service = require('../lib/service')
+const fs = require('fs')
 
-lab.experiment('service', function() {
+lab.experiment('service', function () {
+  lab.beforeEach(function (done) {
+    Config({}, true) // reset the configuration.
+    return done()
+  })
 
-  lab.beforeEach(function(done) {
-    Config({}, true); // reset the configuration.
-    return done();
-  });
+  lab.experiment('allServices', function () {
+    it('returns all services if no filter is provided', function (done) {
+      expect(Service.allServices().length).to.eql(3)
+      done()
+    })
 
-  lab.experiment('allServices', function() {
-    it('returns all services if no filter is provided', function(done) {
-      expect(Service.allServices().length).to.eql(3);
-      done();
-    });
+    it('should filter a specific service if filter is argument is provided', function (done) {
+      const services = Service.allServices('ndm')
+      const service = services[0]
 
-    it('should filter a specific service if filter is argument is provided', function(done) {
-      var services = Service.allServices('ndm'),
-        service = services[0];
+      expect(services.length).to.eql(1)
+      expect(service.name).to.eql('ndm')
 
-      expect(services.length).to.eql(1);
-      expect(service.name).to.eql('ndm');
+      done()
+    })
+  })
 
-      done();
-    });
-  });
+  lab.experiment('env', function () {
+    it('should default module to service name, if no module stanza provided', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.module).to.eql(service.name)
+      done()
+    })
 
-  lab.experiment('env', function() {
-    it('should default module to service name, if no module stanza provided', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.module).to.eql(service.name);
-      done();
-    });
+    it('should allow npm-module to be overridden', function (done) {
+      const service = Service.allServices()[1]
+      expect(service.module).to.eql('ndm-test')
+      done()
+    })
 
-    it('should allow npm-module to be overridden', function(done) {
-      var service = Service.allServices()[1];
-      expect(service.module).to.eql('ndm-test');
-      done();
-    });
+    it('should load global environment stanza if present', function (done) {
+      const service = Service.allServices()[1]
+      expect(service.env.APP).to.eql('my-test-app')
+      done()
+    })
 
-    it('should load global environment stanza if present', function(done) {
-      var service = Service.allServices()[1];
-      expect(service.env.APP).to.eql('my-test-app');
-      done();
-    });
+    it('should handle object rather than value for service env', function (done) {
+      const service = Service.allServices()[1]
+      expect(service.env.HOST).to.eql('localhost')
+      done()
+    })
 
-    it('should handle object rather than value for service env', function(done) {
-      var service = Service.allServices()[1];
-      expect(service.env.HOST).to.eql('localhost');
-      done();
-    });
+    it('should handle object rather than value for global env', function (done) {
+      const service = Service.allServices()[1]
+      expect(service.env.ENVIRONMENT).to.eql('test')
+      done()
+    })
+  })
 
-    it('should handle object rather than value for global env', function(done) {
-      var service = Service.allServices()[1];
-      expect(service.env.ENVIRONMENT).to.eql('test');
-      done();
-    });
-  });
+  lab.experiment('args', function () {
+    it('should load the global args variable', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.args['--batman']).to.eql('greatest-detective')
+      done()
+    })
 
-  lab.experiment('args', function() {
-    it('should load the global args variable', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.args['--batman']).to.eql('greatest-detective');
-      done();
-    });
+    it('should override global args with service specific args', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.args['--dog']).to.eql('also-cute')
+      done()
+    })
 
-    it('should override global args with service specific args', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.args['--dog']).to.eql('also-cute');
-      done();
-    });
+    it('should handle an object rather than a value for service args', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.args['--dog']).to.eql('also-cute')
+      done()
+    })
 
-    it('should handle an object rather than a value for service args', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.args['--dog']).to.eql('also-cute');
-      done();
-    });
+    it('should handle an object rather than a value for global args', function (done) {
+      const service = Service.allServices()[2]
+      expect(service.args['--frontdoor-url']).to.eql('http://127.0.0.1:8080')
+      done()
+    })
 
-    it('should handle an object rather than a value for global args', function(done) {
-      var service = Service.allServices()[2];
-      expect(service.args['--frontdoor-url']).to.eql('http://127.0.0.1:8080');
-      done();
-    });
+    lab.experiment('array arguments', function () {
+      it('should handle array args', function (done) {
+        const service = Service.allServices()[1]
+        expect(service.args.indexOf('--apple')).to.be.gt(-1)
+        done()
+      })
 
-    lab.experiment('array arguments', function() {
-      it('should handle array args', function(done) {
-        var service = Service.allServices()[1];
-        expect(service.args.indexOf('--apple')).to.be.gt(-1);
-        done();
-      });
-
-      it('should combine global args with service level args', function(done) {
+      it('should combine global args with service level args', function (done) {
         Config({
           serviceJsonPath: './test/fixtures/args-service.json'
-        });
-        var service = Service.allServices()[0];
-        expect(service.args[0]).to.eql('a');
-        expect(service.args.indexOf("--apple")).to.not.eql(-1);
-        done();
-      });
-    });
-  });
+        })
+        const service = Service.allServices()[0]
+        expect(service.args[0]).to.eql('a')
+        expect(service.args.indexOf('--apple')).to.not.eql(-1)
+        done()
+      })
+    })
+  })
 
-  lab.experiment('multiple processes', function() {
-    it('creates multiple services when processes value is set', function(done) {
+  lab.experiment('multiple processes', function () {
+    it('creates multiple services when processes value is set', function (done) {
       Config({
         serviceJsonPath: './test/fixtures/multi-process-service.json'
-      });
-      var services = Service.allServices(),
-        serviceNames = _.map(services, function(service) {
-          return service.name;
-        });
+      })
+      const services = Service.allServices()
+      const serviceNames = _.map(services, function (service) {
+        return service.name
+      })
 
-      expect(services.length).to.eql(4);
-      expect(serviceNames).to.include('ndm-test-service');
-      expect(serviceNames).to.include('ndm-test-service-1');
-      expect(serviceNames).to.include('ndm-test-service-2');
-      expect(serviceNames).to.include('dude');
-      done();
-    });
+      expect(services.length).to.eql(4)
+      expect(serviceNames).to.include('ndm-test-service')
+      expect(serviceNames).to.include('ndm-test-service-1')
+      expect(serviceNames).to.include('ndm-test-service-2')
+      expect(serviceNames).to.include('dude')
+      done()
+    })
 
-    it('replaces %i with process count in env and args', function(done) {
+    it('replaces %i with process count in env and args', function (done) {
       Config({
         serviceJsonPath: './test/fixtures/multi-process-service.json'
-      });
-      var services = Service.allServices(),
-        service1 = services[0], // the multiple awesome services.
-        service2 = services[1],
-        service3 = services[3]; // the dude service.
+      })
+      const services = Service.allServices()
+      const service1 = services[0] // the multiple awesome services.
+      const service2 = services[1]
+      const service3 = services[3] // the dude service.
 
       // %i replaced in env object.
-      Lab.expect(service1.env.PORT).to.eql('5000');
-      Lab.expect(service2.env.PORT).to.eql('5001');
+      Lab.expect(service1.env.PORT).to.eql('5000')
+      Lab.expect(service2.env.PORT).to.eql('5001')
 
       // %i replaced in args array.
-      Lab.expect(service1.args).to.include('0');
-      Lab.expect(service2.args).to.include('1');
+      Lab.expect(service1.args).to.include('0')
+      Lab.expect(service2.args).to.include('1')
 
       // %i replaced in args object.
-      Lab.expect(service3.args['--port']).to.eql('8080');
+      Lab.expect(service3.args['--port']).to.eql('8080')
 
-      return done();
-    });
-  });
+      return done()
+    })
+  })
 
-  lab.experiment('_copyFieldsFromPackageJson', function() {
-    it('copies fields from package.json', function(done) {
+  lab.experiment('_copyFieldsFromPackageJson', function () {
+    it('copies fields from package.json', function (done) {
       Config({
         serviceJsonPath: './test/fixtures/multi-process-service.json'
-      });
-      var service = Service.allServices()[0];
+      })
+      const service = Service.allServices()[0]
 
-      expect(service.description).to.eql('testing a service deployment using ndm.');
-      expect(service.scripts.start).to.eql('node ./test.js');
+      expect(service.description).to.eql('testing a service deployment using ndm.')
+      expect(service.scripts.start).to.eql('node ./test.js')
 
-      return done();
-    });
+      return done()
+    })
 
-    it('does not copy fields if module name and package.json name do not match', function(done) {
+    it('does not copy fields if module name and package.json name do not match', function (done) {
       Config({
         serviceJsonPath: './test/fixtures/multi-process-service.json'
-      });
-      var service = Service.allServices()[3];
+      })
+      const service = Service.allServices()[3]
 
-      expect(service.description).to.eql('');
+      expect(service.description).to.eql('')
 
-      return done();
-    });
-  });
+      return done()
+    })
+  })
 
-  lab.experiment('commands', function() {
-    it('should generate appropriate start/stop/restart commands for OSX', function(done) {
+  lab.experiment('commands', function () {
+    it('should generate appropriate start/stop/restart commands for OSX', function (done) {
       Config({
         platform: 'darwin',
         daemonsDirectory: './'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.execCommand = function(command, cb) {
+      service.execCommand = function (command, cb) {
         expect(command).to.match(/launchctl.*load.*/)
-      };
+      }
 
-      service.runCommand('start');
+      service.runCommand('start')
 
-      service.execCommand = function(command, cb) {
+      service.execCommand = function (command, cb) {
         expect(command).to.match(/launchctl.*unload.*launchctl.*load/)
-      };
+      }
 
-      service.runCommand('restart');
+      service.runCommand('restart')
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.match(/launchctl.*unload.*/);
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.match(/launchctl.*unload.*/)
+      }
 
-      service.runCommand('stop');
-      done();
-    });
+      service.runCommand('stop')
+      done()
+    })
 
-    it('should generate appropriate start/stop/restart commands for Centos', function(done) {
+    it('should generate appropriate start/stop/restart commands for Centos', function (done) {
       Config({
         platform: 'centos',
         daemonsDirectory: './'
-      });
+      })
 
-      var service = Service.allServices()[0]
+      const service = Service.allServices()[0]
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("initctl start ndm-test");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('initctl start ndm-test')
+      }
 
-      service.runCommand('start');
+      service.runCommand('start')
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("initctl restart ndm-test");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('initctl restart ndm-test')
+      }
 
-      service.runCommand('restart');
+      service.runCommand('restart')
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("initctl stop ndm-test");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('initctl stop ndm-test')
+      }
 
-      service.runCommand('stop');
+      service.runCommand('stop')
 
-      done();
-    });
+      done()
+    })
 
-    it('should generate appropriate start/stop/restart commands for Ubuntu', function(done) {
+    it('should generate appropriate start/stop/restart commands for Ubuntu', function (done) {
       Config({
         platform: 'ubuntu',
         daemonsDirectory: './'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("service ndm-test start");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('service ndm-test start')
+      }
 
-      service.runCommand('start');
+      service.runCommand('start')
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("service ndm-test restart");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('service ndm-test restart')
+      }
 
-      service.runCommand('restart');
+      service.runCommand('restart')
 
-      service.execCommand = function(command, cb) {
-        expect(command).to.eql("service ndm-test stop");
-      };
+      service.execCommand = function (command, cb) {
+        expect(command).to.eql('service ndm-test stop')
+      }
 
-      service.runCommand('stop');
+      service.runCommand('stop')
 
-      done();
-    });
+      done()
+    })
+  })
 
-  });
-
-  lab.experiment('generateScript', function() {
-
+  lab.experiment('generateScript', function () {
     lab.after(function (done) {
       // cleanup the junk file created by generate.
       rimraf.sync('@npminc_partnersundefined')
       return done()
     })
 
-    function sharedAssertions(script) {
+    function sharedAssertions (script) {
       // local environment variables populated.
-      expect(script).to.match(/PORT/);
-      expect(script).to.match(/8000/);
+      expect(script).to.match(/PORT/)
+      expect(script).to.match(/8000/)
 
       // global environment variables populated.
       expect(script).to.match(/APP/)
-      expect(script).to.match(/my-test-app/);
+      expect(script).to.match(/my-test-app/)
 
       // local args varibles populated.
-      expect(script).to.match(/--kitten/);
-      expect(script).to.match(/cute/);
+      expect(script).to.match(/--kitten/)
+      expect(script).to.match(/cute/)
 
       // global ags variables populated.
-      expect(script).to.match(/--batman/);
-      expect(script).to.match(/greatest-detective/);
+      expect(script).to.match(/--batman/)
+      expect(script).to.match(/greatest-detective/)
     }
 
-    lab.experiment('darwin', function() {
-      it('should generate a script with the appropriate variables populated', function(done) {
+    lab.experiment('darwin', function () {
+      it('should generate a script with the appropriate variables populated', function (done) {
         // test generating a script for darwin.
         Config({
           platform: 'darwin',
           daemonsDirectory: './'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
+          sharedAssertions(script)
 
           // it should populate the bin for the script.
           expect(script).to.match(/>.\/test.js/)
 
-          done();
-        });
+          done()
+        })
+      })
 
-      });
-
-      it('should genterate valid xml', function(done) {
+      it('should genterate valid xml', function (done) {
         // test generating a script for darwin.
         Config({
           platform: 'darwin',
           daemonsDirectory: './',
           serviceJsonPath: './test/fixtures/bad-xml-service.json'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
           // the number of starting and closing tags should be the same
           expect(script.match(/<string>/g).length).to.equal(script.match(/<\/string>/g).length)
           // should have escaped < character.
-          expect(script).to.match(/&lt;/);
+          expect(script).to.match(/&lt;/)
 
-          done();
-        });
-
-      });
+          done()
+        })
+      })
 
       it('should allow --max-old-space-size to be set', function (done) {
         // test generating a script for darwin.
@@ -350,71 +345,69 @@ lab.experiment('service', function() {
           platform: 'darwin',
           daemonsDirectory: './',
           serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
-          var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function () {
+          const script = fs.readFileSync(service.scriptPath()).toString()
           expect(script).to.match(/<string>--max-old-space-size=4096<\/string>/)
-          done();
-        });
-      });
-    });
+          done()
+        })
+      })
+    })
 
-    lab.experiment('centos', function() {
-
-      it('should generate a script with the appropriate variables populated', function(done) {
+    lab.experiment('centos', function () {
+      it('should generate a script with the appropriate variables populated', function (done) {
         Config({
           platform: 'centos',
           daemonsDirectory: './'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0]
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
+          sharedAssertions(script)
 
           // we should not try to su.
-          expect(script).to.not.match(/su -/);
+          expect(script).to.not.match(/su -/)
 
           // it should populate the bin for the script.
-          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/)
 
           // does not escape special characters such as "'".
-          expect(script).to.match(/'awesome'/);
+          expect(script).to.match(/'awesome'/)
 
-          done();
-        });
+          done()
+        })
+      })
 
-      });
-
-      it('should switch su to uid user, if uid is provided', function(done) {
+      it('should switch su to uid user, if uid is provided', function (done) {
         Config({
           platform: 'centos',
           daemonsDirectory: './',
           uid: 'npm'
-        });
+        })
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
+          sharedAssertions(script)
 
           // we should try to step down our privileges.
-          expect(script).to.match(/su - npm/);
+          expect(script).to.match(/su - npm/)
 
-          done();
-        });
-      });
+          done()
+        })
+      })
 
       it('should allow --max-old-space-size to be set', function (done) {
         // test generating a script for darwin.
@@ -423,67 +416,65 @@ lab.experiment('service', function() {
           daemonsDirectory: './',
           uid: 'npm',
           serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
-        });
+        })
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
-          var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function () {
+          const script = fs.readFileSync(service.scriptPath()).toString()
           expect(script).to.match(/ --max-old-space-size=4096 /)
-          done();
-        });
-      });
+          done()
+        })
+      })
+    })
 
-    });
-
-    lab.experiment('ubuntu', function() {
-
-      it('should generate a script with the appropriate variables populated', function(done) {
+    lab.experiment('ubuntu', function () {
+      it('should generate a script with the appropriate variables populated', function (done) {
         Config({
           platform: 'linux',
           daemonsDirectory: './'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0]
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
+          sharedAssertions(script)
 
           // it should populate the bin for the script.
-          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
-          expect(script).to.match(/description ".*"/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/)
+          expect(script).to.match(/description ".*"/)
 
           // does not escape special characters such as "'".
-          expect(script).to.match(/'awesome'/);
+          expect(script).to.match(/'awesome'/)
 
-          done();
-        });
-      });
+          done()
+        })
+      })
 
-      it ('should not have a description stanza if description is blank', function(done) {
+      it('should not have a description stanza if description is blank', function (done) {
         Config({
           platform: 'linux',
           daemonsDirectory: './'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0]
-        service.description = "";
+        const service = Service.allServices()[0]
+        service.description = ''
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
-          expect(script).to.not.match(/description ".*"/);
+          sharedAssertions(script)
+          expect(script).to.not.match(/description ".*"/)
 
-          done();
-        });
-      });
+          done()
+        })
+      })
 
       it('should allow --max-old-space-size to be set', function (done) {
         // test generating a script for darwin.
@@ -492,42 +483,40 @@ lab.experiment('service', function() {
           daemonsDirectory: './',
           uid: 'npm',
           serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
-        });
+        })
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
-          var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function () {
+          const script = fs.readFileSync(service.scriptPath()).toString()
           expect(script).to.match(/ --max-old-space-size=4096 /)
-          done();
-        });
-      });
+          done()
+        })
+      })
+    })
 
-    });
-
-    lab.experiment('initd', function() {
-
-      it('should generate a script with the appropriate variables populated', function(done) {
+    lab.experiment('initd', function () {
+      it('should generate a script with the appropriate variables populated', function (done) {
         Config({
           platform: 'initd',
           daemonsDirectory: './'
-        }, true);
+        }, true)
 
-        var service = Service.allServices()[0]
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
+        service.generateScript(function () {
           // inspect the generated script, and make sure we've
           // populated the appropriate stanzas.
-          var script = fs.readFileSync(service.scriptPath()).toString();
+          const script = fs.readFileSync(service.scriptPath()).toString()
 
-          sharedAssertions(script);
+          sharedAssertions(script)
 
           // it should populate the bin for the script.
-          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/);
+          expect(script).to.match(/(bin\/node \.\/test.js)|(bin\/iojs \.\/test.js)/)
 
-          done();
-        });
-      });
+          done()
+        })
+      })
 
       it('should allow --max-old-space-size to be set', function (done) {
         // test generating a script for darwin.
@@ -536,493 +525,486 @@ lab.experiment('service', function() {
           daemonsDirectory: './',
           uid: 'npm',
           serviceJsonPath: './test/fixtures/max-old-space-size-service.json'
-        });
+        })
 
-        var service = Service.allServices()[0];
+        const service = Service.allServices()[0]
 
-        service.generateScript(function() {
-          var script = fs.readFileSync(service.scriptPath()).toString();
+        service.generateScript(function () {
+          const script = fs.readFileSync(service.scriptPath()).toString()
           expect(script).to.match(/ --max-old-space-size=4096 /)
-          done();
-        });
-      });
+          done()
+        })
+      })
+    })
 
-    });
-
-    it('should raise an appropriate exception if JSON is invalid', function(done) {
+    it('should raise an appropriate exception if JSON is invalid', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         serviceJsonPath: './test/fixtures/invalid-service.json'
-      });
+      })
 
-      expect(function() {
-        var service = Service.allServices();
-      }).to.throw(Error, /invalid service.json, check file for errors/);
-      done();
-    });
+      expect(function () {
+        const service = Service.allServices()
+      }).to.throw(Error, /invalid service.json, check file for errors/)
+      done()
+    })
 
-    it('should pass arguments after -- to generated script', function(done) {
+    it('should pass arguments after -- to generated script', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './'
-      });
+      })
 
       Array.prototype.push.apply(process.argv, ['--', '--foovar', 'barvalue'])
 
-      var service = Service.allServices()[0]
+      const service = Service.allServices()[0]
 
-      service.generateScript(function() {
+      service.generateScript(function () {
         // inspect the generated script, and make sure we've
         // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        const script = fs.readFileSync(service.scriptPath()).toString()
 
-        sharedAssertions(script);
+        sharedAssertions(script)
 
         // it should populate the bin for the script.
         expect(script).to.match(/--foovar barvalue/)
 
-        done();
-      });
-    });
+        done()
+      })
+    })
 
-    it('should output an array of arguments appropriately to generated script', function(done) {
+    it('should output an array of arguments appropriately to generated script', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         serviceJsonPath: './test/fixtures/args-service.json'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.generateScript(function() {
+      service.generateScript(function () {
         // inspect the generated script, and make sure we've
         // populated the appropriate stanzas.
-        var script = fs.readFileSync(service.scriptPath()).toString();
+        const script = fs.readFileSync(service.scriptPath()).toString()
 
         // it should populate the bin for the script.
         expect(script).to.match(/--spider-man sad/)
 
-        done();
-      });
-    });
+        done()
+      })
+    })
 
-    it('should redirect stderr and stdout to log file by default', function(done) {
+    it('should redirect stderr and stdout to log file by default', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         serviceJsonPath: './test/fixtures/args-service.json'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.generateScript(function() {
-        var script = fs.readFileSync(service.scriptPath()).toString();
+      service.generateScript(function () {
+        const script = fs.readFileSync(service.scriptPath()).toString()
 
         // it should redirect script output.
-        expect(script).to.match(/>>.* 2>&1/);
+        expect(script).to.match(/>>.* 2>&1/)
 
-        done();
-      });
-    });
+        done()
+      })
+    })
 
-    it('should allow stdout/stderr redirect to be overridden by console', function(done) {
+    it('should allow stdout/stderr redirect to be overridden by console', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         console: 'log',
         serviceJsonPath: './test/fixtures/args-service.json'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.generateScript(function() {
-        var script = fs.readFileSync(service.scriptPath()).toString();
+      service.generateScript(function () {
+        const script = fs.readFileSync(service.scriptPath()).toString()
 
-        expect(script).to.not.match(/>>.* 2>&1/);
+        expect(script).to.not.match(/>>.* 2>&1/)
         // it should use upstart's logging.
-        expect(script).to.match(/console log/);
+        expect(script).to.match(/console log/)
 
-        done();
-      });
-    });
+        done()
+      })
+    })
+  })
 
-  });
-
-  lab.experiment('removeScript', function() {
-
-    it('should remove a generated script', function(done) {
+  lab.experiment('removeScript', function () {
+    it('should remove a generated script', function (done) {
       Config({
         platform: 'darwin',
         daemonsDirectory: './'
-      });
+      })
 
-      //generate a script so we have something to remove
-      var service = Service.allServices()[0];
+      // generate a script so we have something to remove
+      const service = Service.allServices()[0]
 
-      service.generateScript(function() {
-        service.removeScript(function() {
-          var exists = fs.existsSync(service.scriptPath());
+      service.generateScript(function () {
+        service.removeScript(function () {
+          const exists = fs.existsSync(service.scriptPath())
 
           // it should populate the bin for the script.
           expect(exists).to.eql(false)
 
-          done();
-        });
-      });
-    });
-  });
+          done()
+        })
+      })
+    })
+  })
 
-  lab.experiment('listScripts', function() {
-    it('should list scripts provided by service', function(done) {
+  lab.experiment('listScripts', function () {
+    it('should list scripts provided by service', function (done) {
       Config({
         headless: true,
         logger: {
-          success: function(msg) {
+          success: function (msg) {
             expect(msg).to.match(/foo/)
-            done();
+            done()
           }
         }
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      service.listScripts();
+      service.listScripts()
     })
-  });
+  })
 
-  lab.experiment('hasScript', function() {
-    it('returns true if a script exists corresponding to the name provided', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.hasScript('foo')).to.eql(true);
-      done();
-    });
+  lab.experiment('hasScript', function () {
+    it('returns true if a script exists corresponding to the name provided', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.hasScript('foo')).to.eql(true)
+      done()
+    })
 
-    it('returns false if a script does not exist corresponding to the name provided', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.hasScript('bar')).to.eql(false);
-      done();
-    });
-  });
+    it('returns false if a script does not exist corresponding to the name provided', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.hasScript('bar')).to.eql(false)
+      done()
+    })
+  })
 
-  lab.experiment('runScript', function() {
-    it('should execute matching script for service', function(done) {
+  lab.experiment('runScript', function () {
+    it('should execute matching script for service', function (done) {
       Config({
         headless: true,
         utils: {
           loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
-          exec: function(cmd, cb) {
-            expect(cmd).to.match(/\.\/bin\/foo\.js/);
-            done();
+          exec: function (cmd, cb) {
+            expect(cmd).to.match(/\.\/bin\/foo\.js/)
+            done()
           }
         }
-      });
+      })
 
-      var service = Service.allServices()[0];
-      service.runScript('foo');
-    });
+      const service = Service.allServices()[0]
+      service.runScript('foo')
+    })
 
-    it('should not explode if script does not exist', function(done) {
+    it('should not explode if script does not exist', function (done) {
       Config({
-        headless: true,
-      });
+        headless: true
+      })
 
-      var service = Service.allServices()[0];
-      service.runScript('banana', function() {
-        done();
-      });
-    });
+      const service = Service.allServices()[0]
+      service.runScript('banana', function () {
+        done()
+      })
+    })
 
-    it('should execute the script with the appropriate arguments', function(done) {
-      Config({
-        headless: true,
-        utils: {
-          loadServiceJson: require('../lib/utils').loadServiceJson,
-          resolve: path.resolve,
-          exec: function(cmd, cb) {
-            expect(cmd).to.match(/--dog also-cute/);
-            expect(cmd).to.match(/--batman greatest-detective/);
-            done();
-          }
-        }
-      });
-
-      var service = Service.allServices()[0];
-      service.runScript('foo');
-    });
-
-    it('should execute the script with environment variables prepended', function(done) {
+    it('should execute the script with the appropriate arguments', function (done) {
       Config({
         headless: true,
         utils: {
           loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
-          exec: function(cmd, cb) {
-            expect(cmd).to.match(/PORT="8000"/);
-            done();
+          exec: function (cmd, cb) {
+            expect(cmd).to.match(/--dog also-cute/)
+            expect(cmd).to.match(/--batman greatest-detective/)
+            done()
           }
         }
-      });
+      })
 
-      var service = Service.allServices()[0];
-      service.runScript('foo');
-    });
+      const service = Service.allServices()[0]
+      service.runScript('foo')
+    })
 
-    it('should pass process.argv arguments to script', function(done) {
+    it('should execute the script with environment variables prepended', function (done) {
       Config({
         headless: true,
         utils: {
           loadServiceJson: require('../lib/utils').loadServiceJson,
           resolve: path.resolve,
-          exec: function(cmd, cb) {
-            expect(cmd).to.match(/--timeout 8000/);
-            done();
+          exec: function (cmd, cb) {
+            expect(cmd).to.match(/PORT="8000"/)
+            done()
           }
         }
-      });
+      })
 
-      var service = Service.allServices()[0];
-      service.runScript('foo');
-    });
+      const service = Service.allServices()[0]
+      service.runScript('foo')
+    })
 
-  });
+    it('should pass process.argv arguments to script', function (done) {
+      Config({
+        headless: true,
+        utils: {
+          loadServiceJson: require('../lib/utils').loadServiceJson,
+          resolve: path.resolve,
+          exec: function (cmd, cb) {
+            expect(cmd).to.match(/--timeout 8000/)
+            done()
+          }
+        }
+      })
 
-  lab.experiment('_startScript', function() {
-    it('should remove node bin from the start script', function(done) {
-      var service = Service.allServices()[0],
-        startScript = service._startScript([]);
+      const service = Service.allServices()[0]
+      service.runScript('foo')
+    })
+  })
 
-      expect(startScript).to.eql('./test.js');
+  lab.experiment('_startScript', function () {
+    it('should remove node bin from the start script', function (done) {
+      const service = Service.allServices()[0]
+      const startScript = service._startScript([])
 
-      done();
-    });
+      expect(startScript).to.eql('./test.js')
 
-    it('should add arguments from scripts.start to flatArgs', function(done) {
-      var service = Service.allServices()[0],
-        args = ['foo'],
-        startScript = service._startScript(args);
+      done()
+    })
 
-      expect(args[0]).to.eql('convert');
-      expect(args).to.contain('foo');
+    it('should add arguments from scripts.start to flatArgs', function (done) {
+      const service = Service.allServices()[0]
+      const args = ['foo']
+      const startScript = service._startScript(args)
 
-      done();
-    });
-  });
+      expect(args[0]).to.eql('convert')
+      expect(args).to.contain('foo')
 
-  lab.experiment('_fixPath', function() {
-    it('should replace ./ with absolute path to working directory', function(done) {
-      var service = Service.allServices()[0];
+      done()
+    })
+  })
 
-      expect(service._fixPath('./foo')).to.eql(path.resolve('./foo'));
-      expect(service._fixPath('bar=./foo')).to.eql('bar=' + path.resolve('./foo'));
+  lab.experiment('_fixPath', function () {
+    it('should replace ./ with absolute path to working directory', function (done) {
+      const service = Service.allServices()[0]
 
-      done();
-    });
+      expect(service._fixPath('./foo')).to.eql(path.resolve('./foo'))
+      expect(service._fixPath('bar=./foo')).to.eql('bar=' + path.resolve('./foo'))
 
-    it('should replace ~/ with absolute path to the home directory', function(done) {
-      var service = Service.allServices()[0];
+      done()
+    })
 
-      expect(service._fixPath('~/foo')).to.eql(process.env['HOME'] + '/foo');
-      expect(service._fixPath('bar=~/foo')).to.eql('bar=' + process.env['HOME'] + '/foo');
+    it('should replace ~/ with absolute path to the home directory', function (done) {
+      const service = Service.allServices()[0]
 
-      done();
-    });
-  });
+      expect(service._fixPath('~/foo')).to.eql(process.env.HOME + '/foo')
+      expect(service._fixPath('bar=~/foo')).to.eql('bar=' + process.env.HOME + '/foo')
 
-  lab.experiment('_workingDirectory', function() {
-    it('uses ./node_modules/<service-name> if not self-referential module', function(done) {
-      var service = Service.allServices()[0];
-      expect(service.workingDirectory).to.match(/node_modules\/ndm-test/);
-      done();
-    });
+      done()
+    })
+  })
 
-    it('uses ./ if self-referential module', function(done) {
-      var service = Service.allServices()[2];
-      expect(service.workingDirectory).to.eql(path.resolve(__dirname, '../'));
-      done();
-    });
-  });
+  lab.experiment('_workingDirectory', function () {
+    it('uses ./node_modules/<service-name> if not self-referential module', function (done) {
+      const service = Service.allServices()[0]
+      expect(service.workingDirectory).to.match(/node_modules\/ndm-test/)
+      done()
+    })
 
-  lab.experiment('_serviceJsonPath', function() {
-    it('returns serviceJsonPath if it exists', function(done) {
-      var expectedPath = path.resolve(__dirname, '../service.json'),
-        config = Config({
-          headless: true,
-          serviceJsonPath: expectedPath,
-        });
+    it('uses ./ if self-referential module', function (done) {
+      const service = Service.allServices()[2]
+      expect(service.workingDirectory).to.eql(path.resolve(__dirname, '../'))
+      done()
+    })
+  })
 
-      expect(Service._serviceJsonPath()).to.eql(expectedPath);
-      expect(config.logsDirectory).to.eql(config.defaultLogsDirectory());
+  lab.experiment('_serviceJsonPath', function () {
+    it('returns serviceJsonPath if it exists', function (done) {
+      const expectedPath = path.resolve(__dirname, '../service.json')
+      const config = Config({
+        headless: true,
+        serviceJsonPath: expectedPath
+      })
 
-      done();
-    });
+      expect(Service._serviceJsonPath()).to.eql(expectedPath)
+      expect(config.logsDirectory).to.eql(config.defaultLogsDirectory())
 
-    it('returns package.json path if no service.json found', function(done) {
-      var config = Config({
-          headless: true,
-          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
-        });
+      done()
+    })
+
+    it('returns package.json path if no service.json found', function (done) {
+      const config = Config({
+        headless: true,
+        serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+      })
 
       expect(Service._serviceJsonPath()).to.eql(
         path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
-      );
+      )
 
-      done();
-    });
+      done()
+    })
 
-    it('returns package.json path if no service.json found', function(done) {
-      var config = Config({
-          headless: true,
-          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
-        });
+    it('returns package.json path if no service.json found', function (done) {
+      const config = Config({
+        headless: true,
+        serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+      })
 
       expect(Service._serviceJsonPath()).to.eql(
         path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
-      );
+      )
 
-      done();
-    });
+      done()
+    })
 
-    it('does not return package.json path, if it does not match serviceNameFilter', function(done) {
-      var config = Config({
-          headless: true,
-          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
-        });
+    it('does not return package.json path, if it does not match serviceNameFilter', function (done) {
+      const config = Config({
+        headless: true,
+        serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+      })
 
       expect(Service._serviceJsonPath('banana')).to.eql(
         path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
-      );
+      )
 
-      done();
-    });
+      done()
+    })
 
-    it('returns package.json path, if name in package.json matches serviceNameFilter', function(done) {
-      var config = Config({
-          headless: true,
-          serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
-        });
+    it('returns package.json path, if name in package.json matches serviceNameFilter', function (done) {
+      const config = Config({
+        headless: true,
+        serviceJsonPath: path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/service.json')
+      })
 
       expect(Service._serviceJsonPath('@npm/ndm-test')).to.eql(
         path.resolve(__dirname, './fixtures/node_modules/@npm/ndm-test2/package.json')
-      );
+      )
 
-      done();
-    });
+      done()
+    })
 
-    it('finds service in ./node_modules if no service.json found elsewhere', function(done) {
-      var config = Config({
+    it('finds service in ./node_modules if no service.json found elsewhere', function (done) {
+      const config = Config({
         headless: true,
-        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
-      });
+        serviceJsonPath: './bin/service.json' // path to service.json that does not exist.
+      })
 
-      expect(Service._serviceJsonPath('ndm-test')).to.match(/\/node_modules\/ndm-test\/service\.json/);
-      expect(config.serviceJsonPath).to.match(/\/node_modules\/ndm-test\/service\.json/);
-      expect(config.baseWorkingDirectory).to.match(/\/node_modules\/ndm-test/);
+      expect(Service._serviceJsonPath('ndm-test')).to.match(/\/node_modules\/ndm-test\/service\.json/)
+      expect(config.serviceJsonPath).to.match(/\/node_modules\/ndm-test\/service\.json/)
+      expect(config.baseWorkingDirectory).to.match(/\/node_modules\/ndm-test/)
 
-      done();
-    });
+      done()
+    })
 
-    it('falls back to package.json from service.json when installing global module', function(done) {
-      var config = Config({
+    it('falls back to package.json from service.json when installing global module', function (done) {
+      const config = Config({
         headless: true,
-        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
-      });
+        serviceJsonPath: './bin/service.json' // path to service.json that does not exist.
+      })
 
-      expect(Service._serviceJsonPath('mocha')).to.match(/\/node_modules\/mocha\/package\.json/);
-      expect(config.serviceJsonPath).to.match(/\/node_modules\/mocha\/package\.json/);
-      expect(config.baseWorkingDirectory).to.match(/\/node_modules\/mocha/);
+      expect(Service._serviceJsonPath('mocha')).to.match(/\/node_modules\/mocha\/package\.json/)
+      expect(config.serviceJsonPath).to.match(/\/node_modules\/mocha\/package\.json/)
+      expect(config.baseWorkingDirectory).to.match(/\/node_modules\/mocha/)
 
-      done();
-    });
+      done()
+    })
 
-    it('finds service in modulePrefix directory if no service.json found elsewhere', function(done) {
-      var config = Config({
+    it('finds service in modulePrefix directory if no service.json found elsewhere', function (done) {
+      const config = Config({
         headless: true,
         modulePrefix: './test/fixtures',
-        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
-      });
+        serviceJsonPath: './bin/service.json' // path to service.json that does not exist.
+      })
 
       expect(Service._serviceJsonPath('ndm-test')).to.match(
         /\/fixtures\/node_modules\/ndm-test\/service\.json/
-      );
+      )
       expect(config.serviceJsonPath).to.match(
         /\/fixtures\/node_modules\/ndm-test\/service\.json/
-      );
-      done();
-    });
+      )
+      done()
+    })
 
-    it('uses os logging directory if service is found using discovery', function(done) {
-      var config = Config({
+    it('uses os logging directory if service is found using discovery', function (done) {
+      const config = Config({
         headless: true,
         modulePrefix: './test/fixtures',
-        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
-      });
+        serviceJsonPath: './bin/service.json' // path to service.json that does not exist.
+      })
 
-      Service._serviceJsonPath('ndm-test');
+      Service._serviceJsonPath('ndm-test')
 
-      expect(config.logsDirectory).to.eql(config.osLogsDirectory);
-      done();
-    });
+      expect(config.logsDirectory).to.eql(config.osLogsDirectory)
+      done()
+    })
 
-    it('uses logging directory flag if an override is provided', function(done) {
-      var config = Config({
+    it('uses logging directory flag if an override is provided', function (done) {
+      const config = Config({
         headless: true,
         logsDirectory: '/special/logs',
         modulePrefix: './test/fixtures',
-        serviceJsonPath: './bin/service.json', // path to service.json that does not exist.
-      });
+        serviceJsonPath: './bin/service.json' // path to service.json that does not exist.
+      })
 
-      Service._serviceJsonPath('ndm-test');
+      Service._serviceJsonPath('ndm-test')
 
-      expect(config.logsDirectory).to.eql('/special/logs');
-      done();
-    });
-  });
+      expect(config.logsDirectory).to.eql('/special/logs')
+      done()
+    })
+  })
 
-  lab.experiment('transformPackageJson', function() {
-
-    it('can load a service from package.json rather than service.json', function(done) {
+  lab.experiment('transformPackageJson', function () {
+    it('can load a service from package.json rather than service.json', function (done) {
       var serviceJson = JSON.parse(fs.readFileSync(
         './node_modules/ndm-test/package.json', 'utf-8'
-      ));
+      ))
 
-      var serviceJson = Service.transformPackageJson(serviceJson);
+      var serviceJson = Service.transformPackageJson(serviceJson)
 
-      expect(Object.keys(serviceJson)[0]).to.eql('ndm-test');
-      expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js');
+      expect(Object.keys(serviceJson)[0]).to.eql('ndm-test')
+      expect(serviceJson['ndm-test'].scripts.start).to.eql('node ./test.js')
 
-      done();
-    });
+      done()
+    })
+  })
 
-  });
-
-  lab.experiment('scopedModules', function() {
-    it('escapes init-script path appropriately', function(done) {
+  lab.experiment('scopedModules', function () {
+    it('escapes init-script path appropriately', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         serviceJsonPath: './test/fixtures/scoped-service.json'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      Lab.expect(service.scriptPath()).to.match(/@npminc_partners/);
-      return done();
-    });
+      Lab.expect(service.scriptPath()).to.match(/@npminc_partners/)
+      return done()
+    })
 
-    it('escapes log path appropriately', function(done) {
+    it('escapes log path appropriately', function (done) {
       Config({
         platform: 'linux',
         daemonsDirectory: './',
         serviceJsonPath: './test/fixtures/scoped-service.json'
-      });
+      })
 
-      var service = Service.allServices()[0];
+      const service = Service.allServices()[0]
 
-      Lab.expect(service.logFile).to.match(/@npminc_partners/);
-      return done();
-    });
-  });
-
-});
+      Lab.expect(service.logFile).to.match(/@npminc_partners/)
+      return done()
+    })
+  })
+})
